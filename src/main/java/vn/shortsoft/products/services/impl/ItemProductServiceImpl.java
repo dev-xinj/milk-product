@@ -17,8 +17,8 @@ public class ItemProductServiceImpl implements ItemProductService {
     private ItemProductDao itemProductDao;
 
     @Override
-    public List<ItemProduct> getAllItemProduct() {
-        return itemProductDao.getAllItemProduct();
+    public List<ItemProduct> getAllItemProduct(int pageNo, int pageSize) {
+        return itemProductDao.getAllItemProduct(pageNo, pageSize);
     }
 
     @Override
@@ -31,6 +31,17 @@ public class ItemProductServiceImpl implements ItemProductService {
     @Transactional
     public ItemProduct saveItem(ItemProduct itemProduct) {
         return itemProductDao.saveItem(itemProduct);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+       itemProductDao.deleteById(id);
+    }
+
+    @Override
+    public int updateStatusItem(Long id, String status) {
+        itemProductDao.updateStatusItem(id, status);
+        return 1;
     }
 
 }

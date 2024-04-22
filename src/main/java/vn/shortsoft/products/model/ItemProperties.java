@@ -22,7 +22,7 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "product_items_properties")
-public class ItemProperties extends AbstractItem {
+public class ItemProperties extends BaseEntity {
 
     @Column(name = "made_in")
     private String madeIn;
@@ -39,7 +39,7 @@ public class ItemProperties extends AbstractItem {
     @Column(name = "material")
     private String material;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "category_id", unique = false)
     private CategoryConfig categoryConfig;
 

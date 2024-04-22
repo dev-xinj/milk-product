@@ -3,11 +3,13 @@ package vn.shortsoft.products.dao.impl;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import vn.shortsoft.products.dao.CategoryConfigDao;
 import vn.shortsoft.products.model.CategoryConfig;
 import vn.shortsoft.products.reponsitory.CategoryConfigRepository;
 
+@Component
 public class CategoryConfigDaoImpl implements CategoryConfigDao {
 
     @Autowired

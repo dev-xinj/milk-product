@@ -1,5 +1,6 @@
 package vn.shortsoft.products.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -7,8 +8,10 @@ import org.springframework.stereotype.Component;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +24,7 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "product_items")
-public class ItemProduct extends AbstractItem {
+public class ItemProduct extends BaseEntity {
 
     @Column(name = "item_name")
     private String itemName;
@@ -29,6 +32,9 @@ public class ItemProduct extends AbstractItem {
     @Column(name = "item_code")
     private String itemCode;
 
+    @Column(name = "user_id")
+    private Long userId;
+    
     @Column(name = "type")
     private String type;
 
@@ -37,5 +43,20 @@ public class ItemProduct extends AbstractItem {
 
     @OneToMany(mappedBy = "itemProduct", cascade = CascadeType.ALL)
     private List<ItemProperties> listItemProperties;
+
+
+    public void setItemProperties(ItemProperties itemProperties){
+        if(itemProperties != null){
+            if(listItemProperties == null){
+                listItemProperties = new ArrayList<>();
+            }
+            listItemProperties.add(itemProperties);
+            itemProperties.setItemProduct(this);
+        }
+
+    }
+    // @OneToMany(cascade = CascadeType.ALL)
+    // @JoinColumn(name = "product_item_id")
+    // private List<ItemProperties> listItemProperties;
 
 }

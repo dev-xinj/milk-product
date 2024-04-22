@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
-import jakarta.transaction.Transactional;
 import vn.shortsoft.products.dao.ItemProductDao;
 import vn.shortsoft.products.model.ItemProduct;
 import vn.shortsoft.products.reponsitory.ItemProductRepository;
@@ -17,9 +18,9 @@ public class ItemProductDaoImpl implements ItemProductDao {
     private ItemProductRepository itemProductRepository;
 
     @Override
-    public List<ItemProduct> getAllItemProduct() {
-
-        return itemProductRepository.findAll();
+    public List<ItemProduct> getAllItemProduct(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
+        return itemProductRepository.findAll(pageable).toList();
     }
 
     @Override
@@ -29,8 +30,22 @@ public class ItemProductDaoImpl implements ItemProductDao {
     }
 
     @Override
+    public void deleteById(Long id) {
+        itemProductRepository.deleteById(id);
+    }
+
+    @Override
     public ItemProduct saveItem(ItemProduct itemProduct) {
         return itemProductRepository.save(itemProduct);
+    }
+
+    @Override
+    public int updateStatusItem(Long id, String status) {
+        if (getById(id) != null) {
+            itemProductRepository.updateByStatus(id, status);
+            return 1;
+        }
+        return 0;
     }
 
 }

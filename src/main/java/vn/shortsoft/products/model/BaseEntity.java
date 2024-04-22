@@ -3,26 +3,26 @@ package vn.shortsoft.products.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.springframework.stereotype.Component;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OrderColumn;
+import jakarta.persistence.PostUpdate;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import vn.shortsoft.products.enums.StatusEnum;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 @MappedSuperclass
-public class AbstractItem {
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -44,19 +44,29 @@ public class AbstractItem {
     @OrderColumn
     private Timestamp updatedDate;
 
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 
+    @Column(name = "status")
+    private String status;
+
+
+    @Transient
+    private User user = new User();
+    
     @PrePersist
-    private void setAuditColumns(){
+    private void setAuditColumns() {
         this.createdDate = new Timestamp(new Date().getTime());
         this.updatedDate = new Timestamp(new Date().getTime());
+        this.status = StatusEnum.ACTIVE.name();
+        this.createdBy = user.getUserName();
+        this.updatedBy = user.getUserName();
     }
-    
+
     @PreUpdate
-    private void updateAuditColumn(){
+    private void updateAuditColumn() {
         this.updatedDate = new Timestamp(new Date().getTime());
+        this.updatedBy = user.getUserName();
     }
-    
-
-
 
 }
