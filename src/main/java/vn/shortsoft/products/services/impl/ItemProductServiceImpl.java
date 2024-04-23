@@ -1,12 +1,15 @@
 package vn.shortsoft.products.services.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import vn.shortsoft.products.dao.ItemProductDao;
+import vn.shortsoft.products.dto.ItemProductDTO;
+import vn.shortsoft.products.dto.convert.ItemProductConvert;
 import vn.shortsoft.products.model.ItemProduct;
 import vn.shortsoft.products.services.ItemProductService;
 
@@ -17,25 +20,33 @@ public class ItemProductServiceImpl implements ItemProductService {
     private ItemProductDao itemProductDao;
 
     @Override
-    public List<ItemProduct> getAllItemProduct(int pageNo, int pageSize) {
-        return itemProductDao.getAllItemProduct(pageNo, pageSize);
+    public List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize) {
+        List<ItemProduct> listItemProduct = itemProductDao.getAllItemProduct(pageNo, pageSize);
+        return listItemProduct.stream().map(itemProduct -> ItemProductConvert.convertToItemProductDTO(itemProduct))
+                .toList();
     }
 
     @Override
-    public ItemProduct getById(Long id) {
-
-        return itemProductDao.getById(id);
+    public ItemProductDTO getById(Long id) {
+        return ItemProductConvert.convertToItemProductDTO(itemProductDao.getById(id));
     }
 
     @Override
     @Transactional
-    public ItemProduct saveItem(ItemProduct itemProduct) {
-        return itemProductDao.saveItem(itemProduct);
+    public Long saveItem(ItemProductDTO itemProductDto) {
+        ItemProduct itemProduct = ItemProductConvert.convertToItemProduct(itemProductDto);
+        return itemProductDao.saveItem(itemProduct).getId();
+    }
+
+    @Override
+    public ItemProductDTO updateItem(Long id, ItemProductDTO itemProductDTO) {
+        itemProductDao.updateItem(id, ItemProductConvert.convertToItemProduct(itemProductDTO));
+        return itemProductDTO;
     }
 
     @Override
     public void deleteById(Long id) {
-       itemProductDao.deleteById(id);
+        itemProductDao.deleteById(id);
     }
 
     @Override

@@ -8,7 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 
+import jakarta.transaction.Transactional;
 import vn.shortsoft.products.dao.ItemProductDao;
+import vn.shortsoft.products.exception.ResourceNotFoundException;
 import vn.shortsoft.products.model.ItemProduct;
 import vn.shortsoft.products.reponsitory.ItemProductRepository;
 
@@ -25,8 +27,18 @@ public class ItemProductDaoImpl implements ItemProductDao {
 
     @Override
     public ItemProduct getById(Long id) {
-        Optional optItemProduct = itemProductRepository.findById(id);
-        return optItemProduct.isPresent() ? (ItemProduct) optItemProduct.get() : null;
+        return itemProductRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Item Product by id " + id));
+    }
+
+    @Override
+    public ItemProduct updateItem(Long id, ItemProduct itemProduct) {
+        Optional<ItemProduct> opt = itemProductRepository.findById(id);
+        if (opt.isPresent()) {
+            opt.get().setItemCode(itemProduct.getItemCode());
+            opt.get().setItemName(itemProduct.getItemName());
+        }
+        return itemProductRepository.save(opt.get());
     }
 
     @Override
@@ -40,12 +52,12 @@ public class ItemProductDaoImpl implements ItemProductDao {
     }
 
     @Override
-    public int updateStatusItem(Long id, String status) {
-        if (getById(id) != null) {
+    public void updateStatusItem(Long id, String status) {
+        try {
             itemProductRepository.updateByStatus(id, status);
-            return 1;
+        } catch (Exception e) {
+            throw new ResourceNotFoundException("Not Update Status: " + status);
         }
-        return 0;
     }
 
 }

@@ -1,17 +1,20 @@
 package vn.shortsoft.products.services;
 
 import java.util.List;
+import java.util.Optional;
 
-import vn.shortsoft.products.model.ItemProduct;
+import vn.shortsoft.products.dto.ItemProductDTO;
 
 public interface ItemProductService {
-    ItemProduct saveItem(ItemProduct itemProduct);
+    Long saveItem(ItemProductDTO itemProduct);
 
-    List<ItemProduct> getAllItemProduct(int pageNo, int pageSize);
+    List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize);
 
     int updateStatusItem(Long id, String status);
 
     void deleteById(Long id);
 
-    ItemProduct getById(Long id);
+    ItemProductDTO updateItem(Long id, ItemProductDTO itemProductDTO);
+
+    ItemProductDTO getById(Long id);
 }

@@ -23,8 +23,12 @@ public class ItemPropertiesConvert {
 
     public static List<ItemProperties> convertMultiToItemProperties(List<ItemPropertiesDTO> listItemPropertiesDTO) {
         List<ItemProperties> listItemProperties = new ArrayList<>();
-        for (ItemPropertiesDTO itemPropertiesDTO : listItemPropertiesDTO) {
-            listItemProperties.add(convertToItemProperties(itemPropertiesDTO));
+        try {
+            for (int i = 0; i < listItemPropertiesDTO.size(); i++) {
+                listItemProperties.add(convertToItemProperties(listItemPropertiesDTO.get(i)));
+            }
+        } catch (Exception e) {
+            throw new NullPointerException(e.getMessage());
         }
         return listItemProperties;
     }

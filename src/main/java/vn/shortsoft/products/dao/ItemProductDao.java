@@ -9,9 +9,11 @@ public interface ItemProductDao {
 
     List<ItemProduct> getAllItemProduct(int pageNo, int pageSize);
 
-    int updateStatusItem(Long id, String status);
+    void updateStatusItem(Long id, String status);
 
     void deleteById(Long id);
     
+    ItemProduct updateItem(Long id, ItemProduct itemProduct);
+
     ItemProduct getById(Long id);
 }

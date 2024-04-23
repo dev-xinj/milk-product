@@ -9,7 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.OrderColumn;
-import jakarta.persistence.PostUpdate;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Transient;
@@ -50,10 +49,9 @@ public abstract class BaseEntity {
     @Column(name = "status")
     private String status;
 
-
     @Transient
     private User user = new User();
-    
+
     @PrePersist
     private void setAuditColumns() {
         this.createdDate = new Timestamp(new Date().getTime());

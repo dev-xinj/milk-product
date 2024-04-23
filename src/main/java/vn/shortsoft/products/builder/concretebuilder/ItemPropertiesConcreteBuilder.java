@@ -42,6 +42,7 @@ public class ItemPropertiesConcreteBuilder implements ItemPropertiesBuilder {
         return this;
     }
 
+
     @Override
     public ItemPropertiesBuilder setMaterial(String material) {
         this.material = material;

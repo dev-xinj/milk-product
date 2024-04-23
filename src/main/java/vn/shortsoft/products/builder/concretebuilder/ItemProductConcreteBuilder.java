@@ -8,7 +8,6 @@ import vn.shortsoft.products.model.ItemProperties;
 import vn.shortsoft.products.model.User;
 
 public class ItemProductConcreteBuilder implements ItemProductBuilder {
-
     private Long userId;
     private String itemName;
     private String itemCode;
@@ -77,5 +76,6 @@ public class ItemProductConcreteBuilder implements ItemProductBuilder {
         this.user = user;
         return this;
     }
+
 
 }

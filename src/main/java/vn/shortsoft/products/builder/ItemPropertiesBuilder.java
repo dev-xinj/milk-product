@@ -1,5 +1,6 @@
 package vn.shortsoft.products.builder;
 
+import vn.shortsoft.products.builder.concretebuilder.ItemPropertiesConcreteBuilder;
 import vn.shortsoft.products.model.CategoryConfig;
 import vn.shortsoft.products.model.ItemProduct;
 import vn.shortsoft.products.model.ItemProperties;
@@ -23,6 +24,5 @@ public interface ItemPropertiesBuilder {
     ItemPropertiesBuilder setUser(User user);
     ItemPropertiesBuilder setCategoryConfig(CategoryConfig categoryConfig);
     ItemPropertiesBuilder setItemProduct(ItemProduct itemProduct);
-    
     ItemProperties build();
 }

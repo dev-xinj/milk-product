@@ -3,15 +3,14 @@ package vn.shortsoft.products.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,6 +22,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Component
 @Entity
+@DynamicUpdate
 @Table(name = "product_items")
 public class ItemProduct extends BaseEntity {
 
@@ -45,7 +45,7 @@ public class ItemProduct extends BaseEntity {
     private List<ItemProperties> listItemProperties;
 
 
-    public void setItemProperties(ItemProperties itemProperties){
+    public void addItemProperties(ItemProperties itemProperties){
         if(itemProperties != null){
             if(listItemProperties == null){
                 listItemProperties = new ArrayList<>();

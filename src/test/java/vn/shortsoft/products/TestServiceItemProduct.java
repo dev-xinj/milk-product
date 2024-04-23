@@ -75,8 +75,8 @@ public class TestServiceItemProduct {
                                 .setStatus("ACTIVE")
                                 .build();
 
-                itemProduct.setItemProperties(itemProperties1);
-                itemProduct.setItemProperties(itemProperties2);
+                itemProduct.addItemProperties(itemProperties1);
+                itemProduct.addItemProperties(itemProperties2);
                 itemProductService.save(itemProduct);
                 Assertions.assertThat(itemProduct.getId()).isGreaterThan(0);
         }
