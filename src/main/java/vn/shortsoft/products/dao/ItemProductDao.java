@@ -1,13 +1,13 @@
 package vn.shortsoft.products.dao;
 
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 import vn.shortsoft.products.model.ItemProduct;
 
 public interface ItemProductDao {
     ItemProduct saveItem(ItemProduct itemProduct);
 
-    List<ItemProduct> getAllItemProduct(int pageNo, int pageSize);
+    Page<ItemProduct> getAllItemProduct(int pageNo, int pageSize, String sortBy);
 
     void updateStatusItem(Long id, String status);
 

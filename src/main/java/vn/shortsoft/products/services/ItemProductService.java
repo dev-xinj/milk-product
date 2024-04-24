@@ -8,7 +8,7 @@ import vn.shortsoft.products.dto.ItemProductDTO;
 public interface ItemProductService {
     Long saveItem(ItemProductDTO itemProduct);
 
-    List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize);
+    List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize,String sortBy);
 
     int updateStatusItem(Long id, String status);
 

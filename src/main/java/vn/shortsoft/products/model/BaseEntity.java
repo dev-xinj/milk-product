@@ -3,6 +3,8 @@ package vn.shortsoft.products.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -41,6 +43,7 @@ public abstract class BaseEntity {
 
     @Column(name = "updated_date")
     @OrderColumn
+    @UpdateTimestamp
     private Timestamp updatedDate;
 
     @Column(name = "is_deleted")

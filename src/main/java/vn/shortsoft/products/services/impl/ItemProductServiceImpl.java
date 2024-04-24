@@ -1,9 +1,9 @@
 package vn.shortsoft.products.services.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -20,10 +20,15 @@ public class ItemProductServiceImpl implements ItemProductService {
     private ItemProductDao itemProductDao;
 
     @Override
-    public List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize) {
-        List<ItemProduct> listItemProduct = itemProductDao.getAllItemProduct(pageNo, pageSize);
+    public List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize, String sortBy) {
+        int p = pageNo;
+        if (pageNo > 0) {
+            pageNo = pageNo - 1;
+        }
+        Page<ItemProduct> listItemProduct = itemProductDao.getAllItemProduct(pageNo, pageSize, sortBy);
         return listItemProduct.stream().map(itemProduct -> ItemProductConvert.convertToItemProductDTO(itemProduct))
                 .toList();
+
     }
 
     @Override
