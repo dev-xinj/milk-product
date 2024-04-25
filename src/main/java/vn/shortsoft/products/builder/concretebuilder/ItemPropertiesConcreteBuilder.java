@@ -13,14 +13,14 @@ public class ItemPropertiesConcreteBuilder implements ItemPropertiesBuilder {
     private String color;
     private String material;
     private String status;
+    private Integer totalNumber;
     private User user;
     private CategoryConfig categoryConfig;
     private ItemProduct itemProduct;
 
     @Override
     public ItemProperties build() {
-        ItemProperties itemProperties = new ItemProperties(madeIn, price, size, color, material, categoryConfig,
-                itemProduct);
+        ItemProperties itemProperties = new ItemProperties(madeIn, price, size, color, totalNumber, material, categoryConfig, itemProduct);
         if (status != null) {
             itemProperties.setStatus(status);
         }
@@ -28,6 +28,12 @@ public class ItemPropertiesConcreteBuilder implements ItemPropertiesBuilder {
             itemProperties.setUser(user);
         }
         return itemProperties;
+    }
+
+    @Override
+    public ItemPropertiesBuilder setTotalNumber(Integer totalNumber) {
+        this.totalNumber = totalNumber;
+        return this;
     }
 
     @Override

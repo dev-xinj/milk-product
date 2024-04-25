@@ -40,6 +40,7 @@ public class ItemPropertiesConvert {
                 .material(itemProperties.getMaterial())
                 .price(itemProperties.getPrice())
                 .size(itemProperties.getSize())
+                .totalNumber(itemProperties.getTotalNumber())
                 .build();
     }
 

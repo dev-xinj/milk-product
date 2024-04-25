@@ -36,10 +36,13 @@ public class ItemProperties extends BaseEntity {
     @Column(name = "color")
     private String color;
 
+    @Column(name = "total_number")
+    private Integer totalNumber;
+
     @Column(name = "material")
     private String material;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE,CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.MERGE, CascadeType.PERSIST })
     @JoinColumn(name = "category_id", unique = false)
     private CategoryConfig categoryConfig;
 

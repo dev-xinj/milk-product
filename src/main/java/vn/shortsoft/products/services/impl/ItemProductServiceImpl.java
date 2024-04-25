@@ -1,7 +1,5 @@
 package vn.shortsoft.products.services.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -11,6 +9,7 @@ import vn.shortsoft.products.dao.ItemProductDao;
 import vn.shortsoft.products.dto.ItemProductDTO;
 import vn.shortsoft.products.dto.convert.ItemProductConvert;
 import vn.shortsoft.products.model.ItemProduct;
+import vn.shortsoft.products.response.PageResponse;
 import vn.shortsoft.products.services.ItemProductService;
 
 @Service
@@ -20,14 +19,18 @@ public class ItemProductServiceImpl implements ItemProductService {
     private ItemProductDao itemProductDao;
 
     @Override
-    public List<ItemProductDTO> getAllItemProduct(int pageNo, int pageSize, String sortBy) {
+    public PageResponse<?> getAllItemProduct(int pageNo, int pageSize, String sortBy) {
         int p = pageNo;
         if (pageNo > 0) {
             pageNo = pageNo - 1;
         }
         Page<ItemProduct> listItemProduct = itemProductDao.getAllItemProduct(pageNo, pageSize, sortBy);
-        return listItemProduct.stream().map(itemProduct -> ItemProductConvert.convertToItemProductDTO(itemProduct))
-                .toList();
+        return PageResponse.builder()
+        .pageNo(p)
+        .pageSize(pageSize)
+        .pageTotal(listItemProduct.getTotalPages())
+        .data(listItemProduct.stream().map(itemProduct -> ItemProductConvert.convertToItemProductDTO(itemProduct))
+                .toList()).build();
 
     }
 

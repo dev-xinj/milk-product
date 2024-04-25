@@ -27,23 +27,28 @@ public class ItemProductDaoImpl implements ItemProductDao {
     @Override
     public Page<ItemProduct> getAllItemProduct(int pageNo, int pageSize, String sortBy) {
         Pageable pageable;
-        // String regex = "(\\w+?)(:)(desc|asc)";
-        // Pattern pattern = Pattern.compile(regex);
-        // Matcher matcher;
-        // Map<String, Sort.Direction> map = new HashMap<>();
-        // map.put("desc", Sort.Direction.DESC);
-        // map.put("asc", Sort.Direction.ASC);
-        if (StringUtils.hasLength(sortBy)) {
-            // matcher = pattern.matcher(sortBy);
-            // if (matcher.find()) {
-            //     pageable = PageRequest.of(pageNo, pageSize, Sort.by(map.get(matcher.group(3)), matcher.group(1)));
-            // }
-            pageable = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.ASC, sortBy));
+        if (checkRegexSort(sortBy) != null) {
+            pageable = PageRequest.of(pageNo, pageSize, checkRegexSort(sortBy));
         } else {
             pageable = PageRequest.of(pageNo, pageSize);
         }
-        // , Sort.by(Sort.Direction.ASC,sortBy)
         return itemProductRepository.findAll(pageable);
+    }
+
+    private Sort checkRegexSort(String sortBy) {
+        String regex = "(\\w+?)(:)(desc|asc)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher;
+        Map<String, Sort.Direction> map = new HashMap<>();
+        if (StringUtils.hasLength(sortBy)) {
+            map.put("desc", Sort.Direction.DESC);
+            map.put("asc", Sort.Direction.ASC);
+            matcher = pattern.matcher(sortBy);
+            if (matcher.find()) {
+                return Sort.by(map.get(matcher.group(3)), matcher.group(1));
+            }
+        }
+        return null;
     }
 
     @Override

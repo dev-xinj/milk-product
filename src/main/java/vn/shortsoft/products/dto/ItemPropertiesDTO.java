@@ -12,6 +12,7 @@ public class ItemPropertiesDTO implements Serializable{
     private Float price;
     private String size;
     private String color;
+    private Integer totalNumber;
     private String material;
     private CategoryConfigDTO categoryConfigDTO;
     private ItemProductDTO itemProductDto;

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
@@ -34,7 +35,22 @@ public class ItemProduct extends BaseEntity {
 
     @Column(name = "user_id")
     private Long userId;
-    
+
+    @Column(name = "total_number")
+    private Integer totalNumber;
+
+    @Column(name = "purchase_number")
+    private Integer purchaseNumber;
+
+    @Column(name = "see_number")
+    private Integer seeNumber;
+
+    @Column(name = "like_number")
+    private Integer likeNumber;
+
+    @Column(name = "description", length = 2500)
+    private String description;
+
     @Column(name = "type")
     private String type;
 
@@ -44,13 +60,16 @@ public class ItemProduct extends BaseEntity {
     @OneToMany(mappedBy = "itemProduct", cascade = CascadeType.ALL)
     private List<ItemProperties> listItemProperties;
 
-
-    public void addItemProperties(ItemProperties itemProperties){
-        if(itemProperties != null){
-            if(listItemProperties == null){
+    public void addItemProperties(ItemProperties itemProperties) {
+        if (itemProperties != null) {
+            if (listItemProperties == null) {
                 listItemProperties = new ArrayList<>();
             }
             listItemProperties.add(itemProperties);
+            if (totalNumber == null) {
+                totalNumber = 0;
+            }
+            totalNumber += itemProperties.getTotalNumber();
             itemProperties.setItemProduct(this);
         }
 

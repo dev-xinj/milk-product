@@ -14,14 +14,34 @@ public interface ItemProductBuilder {
     // private String type;
     // private String sku;
     // private List<ItemProperties> listItemProperties;
-
+    // private int totalNumber;
+    // private int purchaseNumber;
+    // private int seeNumber;
+    // private int likeNumber;
     ItemProductBuilder setUserId(Long userId);
+
     ItemProductBuilder setItemName(String itemName);
+
     ItemProductBuilder setItemCode(String itemCode);
+
     ItemProductBuilder setType(String type);
+
     ItemProductBuilder setSku(String sku);
+
     ItemProductBuilder setStatus(String status);
+
+    ItemProductBuilder setTotalNumber(Integer totalNumber);
+
+    ItemProductBuilder setPurchaseNumber(Integer purchaseNumber);
+
+    ItemProductBuilder setSeeNumber(Integer seeNumber);
+
+    ItemProductBuilder setLikeNumber(Integer likeNumber);
+
+    ItemProductBuilder setDescription(String description);
+
     ItemProductBuilder setUser(User user);
+
     ItemProductBuilder setlistItemProperties(List<ItemProperties> listItemProperties);
 
     ItemProduct build();

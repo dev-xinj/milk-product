@@ -18,6 +18,10 @@ public class ItemProductConvert {
                                 .setType(itemProductDTO.getType())
                                 .setUserId(itemProductDTO.getUserId())
                                 .setUser(itemProductDTO.getUser())
+                                .setDescription(itemProductDTO.getDescription())
+                                .setLikeNumber(itemProductDTO.getLikeNumber())
+                                .setPurchaseNumber(itemProductDTO.getPurchaseNumber())
+                                .setSeeNumber(itemProductDTO.getSeeNumber())
                                 .build();
                 itemProductDTO.getListItemPropertiesDto()
                                 .forEach(a -> itemProduct.addItemProperties(itemPropertiesBuilder.setColor(a.getColor())
@@ -25,6 +29,7 @@ public class ItemProductConvert {
                                                 .setMaterial(a.getMadeIn())
                                                 .setPrice(a.getPrice())
                                                 .setSize(a.getSize())
+                                                .setTotalNumber(a.getTotalNumber())
                                                 .build()));
                 return itemProduct;
 
@@ -36,6 +41,11 @@ public class ItemProductConvert {
                                 .type(itemProduct.getType())
                                 .itemCode(itemProduct.getItemCode())
                                 .itemName(itemProduct.getItemName())
+                                .likeNumber(itemProduct.getLikeNumber())
+                                .purchaseNumber(itemProduct.getPurchaseNumber())
+                                .totalNumber(itemProduct.getTotalNumber())
+                                .description(itemProduct.getDescription())
+                                .seeNumber(itemProduct.getSeeNumber())
                                 .listItemPropertiesDto(
                                                 ItemPropertiesConvert.convertMultiToItemPropertiesDTO(
                                                                 itemProduct.getListItemProperties()))

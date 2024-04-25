@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.constraints.Min;
 import vn.shortsoft.products.dto.ItemProductDTO;
+import vn.shortsoft.products.response.PageResponse;
 import vn.shortsoft.products.response.ResponseObject;
 import vn.shortsoft.products.services.ItemProductService;
 
@@ -40,7 +41,7 @@ public class ItemProductController {
 
     @PostMapping()
     public ResponseEntity<ResponseObject> saveItemProduct(@RequestBody ItemProductDTO itemProductDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(), "Save Successfully",
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject(HttpStatus.CREATED.name(), "Save Successfully",
                 itemProductService.saveItem(itemProductDTO)));
     }
 

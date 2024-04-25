@@ -6,6 +6,7 @@ import vn.shortsoft.products.builder.ItemProductBuilder;
 import vn.shortsoft.products.model.ItemProduct;
 import vn.shortsoft.products.model.ItemProperties;
 import vn.shortsoft.products.model.User;
+import vn.shortsoft.products.utils.IntegerUtils;
 
 public class ItemProductConcreteBuilder implements ItemProductBuilder {
     private Long userId;
@@ -14,16 +15,22 @@ public class ItemProductConcreteBuilder implements ItemProductBuilder {
     private String type;
     private String sku;
     private String status;
+    private Integer totalNumber;
+    private Integer purchaseNumber;
+    private Integer seeNumber;
+    private Integer likeNumber;
+    private String description;
     private User user;
     private List<ItemProperties> listItemProperties;
 
     @Override
     public ItemProduct build() {
-        ItemProduct itemProduct = new ItemProduct(itemName, itemCode, userId, type, sku, listItemProperties);
-        if(status != null){
+        ItemProduct itemProduct = new ItemProduct(itemName, itemCode, userId, totalNumber, purchaseNumber, seeNumber,
+                likeNumber, description, type, sku, listItemProperties);
+        if (status != null) {
             itemProduct.setStatus(status);
         }
-        if(user != null){
+        if (user != null) {
             itemProduct.setUser(user);
         }
         return itemProduct;
@@ -77,5 +84,50 @@ public class ItemProductConcreteBuilder implements ItemProductBuilder {
         return this;
     }
 
+    @Override
+    public ItemProductBuilder setDescription(String description) {
+        this.description = description;
+        return this;
+    }
+
+    @Override
+    public ItemProductBuilder setLikeNumber(Integer likeNumber) {
+        if (IntegerUtils.hasValue(likeNumber)) {
+            this.likeNumber = likeNumber;
+        } else {
+            this.likeNumber = 0;
+        }
+        return this;
+    }
+
+    @Override
+    public ItemProductBuilder setPurchaseNumber(Integer purchaseNumber) {
+        if (IntegerUtils.hasValue(purchaseNumber)) {
+            this.purchaseNumber = purchaseNumber;
+        } else {
+            this.purchaseNumber = 0;
+        }
+        return this;
+    }
+
+    @Override
+    public ItemProductBuilder setSeeNumber(Integer seeNumber) {
+        if (IntegerUtils.hasValue(seeNumber)) {
+            this.seeNumber = seeNumber;
+        } else {
+            this.seeNumber = 0;
+        }
+        return this;
+    }
+
+    @Override
+    public ItemProductBuilder setTotalNumber(Integer totalNumber) {
+        if (IntegerUtils.hasValue(totalNumber)) {
+            this.totalNumber = totalNumber;
+        } else {
+            this.totalNumber = 0;
+        }
+        return this;
+    }
 
 }

@@ -16,13 +16,24 @@ public interface ItemPropertiesBuilder {
     // private ItemProduct itemProduct;
 
     ItemPropertiesBuilder setMadeIn(String madeIn);
+
     ItemPropertiesBuilder setPrice(Float price);
+
     ItemPropertiesBuilder setSize(String size);
+
     ItemPropertiesBuilder setColor(String color);
+
     ItemPropertiesBuilder setMaterial(String material);
+
     ItemPropertiesBuilder setStatus(String status);
+
+    ItemPropertiesBuilder setTotalNumber(Integer totalNumber);
+
     ItemPropertiesBuilder setUser(User user);
+
     ItemPropertiesBuilder setCategoryConfig(CategoryConfig categoryConfig);
+
     ItemPropertiesBuilder setItemProduct(ItemProduct itemProduct);
+
     ItemProperties build();
 }
