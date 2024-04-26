@@ -1,5 +1,7 @@
 package vn.shortsoft.products.services.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,13 @@ public class ItemProductServiceImpl implements ItemProductService {
         }
         Page<ItemProduct> listItemProduct = itemProductDao.getAllItemProduct(pageNo, pageSize, sortBy);
         return PageResponse.builder()
-        .pageNo(p)
-        .pageSize(pageSize)
-        .pageTotal(listItemProduct.getTotalPages())
-        .data(listItemProduct.stream().map(itemProduct -> ItemProductConvert.convertToItemProductDTO(itemProduct))
-                .toList()).build();
+                .pageNo(p)
+                .pageSize(pageSize)
+                .pageTotal(listItemProduct.getTotalPages())
+                .data(listItemProduct.stream()
+                        .map(itemProduct -> ItemProductConvert.convertToItemProductDTO(itemProduct))
+                        .toList())
+                .build();
 
     }
 
@@ -61,6 +65,22 @@ public class ItemProductServiceImpl implements ItemProductService {
     public int updateStatusItem(Long id, String status) {
         itemProductDao.updateStatusItem(id, status);
         return 1;
+    }
+
+    @Override
+    public List<ItemProduct> getListEmployeeBySearch(int pageNo, int pageSize, String search,
+            String sortBy) {
+        return itemProductDao.getListEmployeeBySearch(pageNo, pageSize, search, sortBy);
+        // return PageResponse.builder()
+        // .pageNo(null)
+        // .pageSize(null)
+        // .pageTotal(null)
+        // .data(itemProductDao.getListEmployeeBySearch(pageNo, pageSize, search,
+        // sortBy).stream()
+        // .map(itemProduct -> ItemProductConvert.convertToItemProductDTO(
+        // itemProduct))
+        // .toList())
+        // .build();
     }
 
 }

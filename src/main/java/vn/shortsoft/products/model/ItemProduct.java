@@ -7,6 +7,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,6 +59,7 @@ public class ItemProduct extends BaseEntity {
     @Column(name = "sku")
     private String sku;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "itemProduct", cascade = CascadeType.ALL)
     private List<ItemProperties> listItemProperties;
 

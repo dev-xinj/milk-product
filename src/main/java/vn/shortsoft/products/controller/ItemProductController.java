@@ -23,39 +23,53 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("v1/products")
 public class ItemProductController {
-    @Autowired
-    ItemProductService itemProductService;
+        @Autowired
+        ItemProductService itemProductService;
 
-    @GetMapping()
-    public ResponseEntity<ResponseObject> getListItemProduct(@RequestParam int pageNo,
-            @RequestParam int pageSize, @RequestParam(required = false) String sortBy) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(), "Successfully",
-                itemProductService.getAllItemProduct(pageNo, pageSize, sortBy)));
-    }
+        @GetMapping()
+        public ResponseEntity<ResponseObject> getListItemProduct(@RequestParam int pageNo,
+                        @RequestParam int pageSize, @RequestParam(required = false) String sortBy) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(new ResponseObject(HttpStatus.OK.name(), "Successfully",
+                                                itemProductService.getAllItemProduct(pageNo, pageSize, sortBy)));
+        }
 
-    @GetMapping("{id}")
-    public ResponseEntity<ResponseObject> getItemProductById(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new ResponseObject(HttpStatus.OK.name(), "Successfully", itemProductService.getById(id)));
-    }
+        @GetMapping("/search")
+        public ResponseEntity<ResponseObject> getListEmployeeBySearch(@RequestParam int pageNo,
+                        @RequestParam int pageSize, @RequestParam(required = false) String sortBy,
+                        @RequestParam(required = false) String search) {
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(),
+                                "Successfully",
+                                itemProductService.getListEmployeeBySearch(pageNo, pageSize, search, sortBy)));
+        }
 
-    @PostMapping()
-    public ResponseEntity<ResponseObject> saveItemProduct(@RequestBody ItemProductDTO itemProductDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseObject(HttpStatus.CREATED.name(), "Save Successfully",
-                itemProductService.saveItem(itemProductDTO)));
-    }
+        @GetMapping("{id}")
+        public ResponseEntity<ResponseObject> getItemProductById(@PathVariable Long id) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(new ResponseObject(HttpStatus.OK.name(), "Successfully",
+                                                itemProductService.getById(id)));
+        }
 
-    @PatchMapping
-    public ResponseEntity<ResponseObject> updateStatusItemProduct(@RequestParam String status, @RequestParam Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(),
-                "Update Status Success", itemProductService.updateStatusItem(id, status)));
-    }
+        @PostMapping()
+        public ResponseEntity<ResponseObject> saveItemProduct(@RequestBody ItemProductDTO itemProductDTO) {
+                return ResponseEntity.status(HttpStatus.CREATED)
+                                .body(new ResponseObject(HttpStatus.CREATED.name(), "Save Successfully",
+                                                itemProductService.saveItem(itemProductDTO)));
+        }
 
-    @PutMapping("{id}")
-    public ResponseEntity<ResponseObject> updateItemProduct(@PathVariable Long id,
-            @RequestBody ItemProductDTO itemProductDTO) {
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(), "Update Successfully",
-                itemProductService.updateItem(id, itemProductDTO)));
-    }
+        @PatchMapping
+        public ResponseEntity<ResponseObject> updateStatusItemProduct(@RequestParam String status,
+                        @RequestParam Long id) {
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(),
+                                "Update success status " + status, itemProductService.updateStatusItem(id, status)));
+        }
+
+        @PutMapping("{id}")
+        public ResponseEntity<ResponseObject> updateItemProduct(@PathVariable Long id,
+                        @RequestBody ItemProductDTO itemProductDTO) {
+                return ResponseEntity.status(HttpStatus.OK)
+                                .body(new ResponseObject(HttpStatus.OK.name(), "Update Successfully",
+                                                itemProductService.updateItem(id, itemProductDTO)));
+        }
 
 }

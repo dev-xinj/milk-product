@@ -1,6 +1,7 @@
 package vn.shortsoft.products.dao.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +14,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import vn.shortsoft.products.dao.ItemProductDao;
 import vn.shortsoft.products.exception.ResourceNotFoundException;
@@ -23,6 +28,9 @@ import vn.shortsoft.products.reponsitory.ItemProductRepository;
 public class ItemProductDaoImpl implements ItemProductDao {
     @Autowired
     private ItemProductRepository itemProductRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Override
     public Page<ItemProduct> getAllItemProduct(int pageNo, int pageSize, String sortBy) {
@@ -105,6 +113,26 @@ public class ItemProductDaoImpl implements ItemProductDao {
         }
         return itemProductOld;
 
+    }
+
+    // @Override
+    // public List<ItemProduct> getListEmployeeBySearch(int pageNo, int pageSize,
+    // String search, String sortBy) {
+    // return entityManagerRepository.getListEmployeeBySearch(pageNo, pageSize,
+    // search, sortBy);
+
+    // }
+    @Override
+    public List<ItemProduct> getListEmployeeBySearch(int pageNo, int pageSize, String search, String sortBy) {
+
+        StringBuilder sql = new StringBuilder("SELECT i FROM ItemProduct i");
+        TypedQuery<ItemProduct> query = entityManager.createQuery(sql.toString(),ItemProduct.class);
+        query.setFirstResult(pageNo);
+        query.setMaxResults(pageSize);
+
+        List<ItemProduct> listItemProduct = query.getResultList();
+        // int totalPage = listItemProduct.size() / pageSize;
+        return listItemProduct;
     }
 
 }
