@@ -16,8 +16,9 @@ import org.springframework.util.StringUtils;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import vn.shortsoft.products.dao.ItemProductDao;
 import vn.shortsoft.products.exception.ResourceNotFoundException;
@@ -125,14 +126,24 @@ public class ItemProductDaoImpl implements ItemProductDao {
     @Override
     public List<ItemProduct> getListEmployeeBySearch(int pageNo, int pageSize, String search, String sortBy) {
 
-        StringBuilder sql = new StringBuilder("SELECT i FROM ItemProduct i");
-        TypedQuery<ItemProduct> query = entityManager.createQuery(sql.toString(),ItemProduct.class);
-        query.setFirstResult(pageNo);
-        query.setMaxResults(pageSize);
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 
-        List<ItemProduct> listItemProduct = query.getResultList();
-        // int totalPage = listItemProduct.size() / pageSize;
-        return listItemProduct;
+        CriteriaQuery<ItemProduct> criteriaQuery = criteriaBuilder.createQuery(ItemProduct.class);
+        Root<ItemProduct> root = criteriaQuery.from(ItemProduct.class);
+
+        criteriaQuery.select(root);
+        criteriaQuery.where(criteriaBuilder.equal(root.get("itemName"), "quan"));
+        List<ItemProduct> list = entityManager.createQuery(criteriaQuery).getResultList();
+        return list;
+        // StringBuilder sql = new StringBuilder("SELECT i FROM ItemProduct i");
+        // TypedQuery<ItemProduct> query =
+        // entityManager.createQuery(sql.toString(),ItemProduct.class);
+        // query.setFirstResult(pageNo);
+        // query.setMaxResults(pageSize);
+
+        // List<ItemProduct> listItemProduct = query.getResultList();
+        // // int totalPage = listItemProduct.size() / pageSize;
+        // return listItemProduct;
     }
 
 }
