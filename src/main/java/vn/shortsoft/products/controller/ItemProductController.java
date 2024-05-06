@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import vn.shortsoft.products.dto.ItemProductDTO;
+import vn.shortsoft.products.mapper.MapperToConvert;
 import vn.shortsoft.products.model.Roles;
 import vn.shortsoft.products.reponsitory.RoleRepository;
 import vn.shortsoft.products.response.ResponseObject;
@@ -42,14 +44,20 @@ public class ItemProductController {
         private CreateRole createRole;
 
         @GetMapping()
+        // @Cacheable(cacheNames = "getListItemProduct",key = "getList")
         public ResponseEntity<ResponseObject> getListItemProduct(@RequestParam int pageNo,
                         @RequestParam int pageSize, @RequestParam(required = false) String sortBy) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(new ResponseObject(HttpStatus.OK.name(), "Successfully",
                                                 itemProductService.getAllItemProduct(pageNo, pageSize, sortBy)));
         }
-
+        @GetMapping("/mapper")
+        public String getMethodName(@RequestBody ItemProductDTO param) {
+            return MapperToConvert.ConvertToJson(param);
+        }
+        
         @GetMapping("/search")
+        // @Cacheable(value = "getSearchListItemProduct")
         public ResponseEntity<ResponseObject> getListEmployeeBySearch(@RequestParam int pageNo,
                         @RequestParam int pageSize, @RequestParam(required = false) String sortBy,
                         @RequestParam(required = false) String search) {
@@ -59,6 +67,7 @@ public class ItemProductController {
         }
 
         @GetMapping("{id}")
+        // @Cacheable(value = "getItemProductById",key = "#id")
         public ResponseEntity<ResponseObject> getItemProductById(@PathVariable Long id) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(new ResponseObject(HttpStatus.OK.name(), "Successfully",
@@ -104,7 +113,7 @@ public class ItemProductController {
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
-                Roles r = createRole.findFirstByName();
+                // Roles r = createRole.findFirstByName();
                 return kvp;
         }
 

@@ -1,5 +1,7 @@
 package vn.shortsoft.products.model;
 
+import java.io.Serializable;
+
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Column;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "product_items_category_config")
-public class CategoryConfig extends BaseEntity {
+public class CategoryConfig extends BaseEntity{
     @Column(name = "category_name")
     private String categoryName;
 

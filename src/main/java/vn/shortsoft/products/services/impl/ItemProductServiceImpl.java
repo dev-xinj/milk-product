@@ -3,6 +3,9 @@ package vn.shortsoft.products.services.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +42,7 @@ public class ItemProductServiceImpl implements ItemProductService {
     }
 
     @Override
+    @Cacheable(cacheNames = "product", key = "#id")
     public ItemProductDTO getById(Long id) {
         return ItemProductConvert.convertToItemProductDTO(itemProductDao.getById(id));
     }
@@ -51,36 +55,30 @@ public class ItemProductServiceImpl implements ItemProductService {
     }
 
     @Override
+    @CachePut(cacheNames = "product", key = "#id")
     public ItemProductDTO updateItem(Long id, ItemProductDTO itemProductDTO) {
         itemProductDao.updateItem(id, ItemProductConvert.convertToItemProduct(itemProductDTO));
         return itemProductDTO;
     }
 
     @Override
+    @CacheEvict(cacheNames = "product",key = "#id")
     public void deleteById(Long id) {
         itemProductDao.deleteById(id);
     }
 
     @Override
+    @CachePut(cacheNames = "product",key = "#id")
     public int updateStatusItem(Long id, String status) {
         itemProductDao.updateStatusItem(id, status);
         return 1;
     }
 
     @Override
+    
     public List<ItemProduct> getListEmployeeBySearch(int pageNo, int pageSize, String search,
             String sortBy) {
         return itemProductDao.getListEmployeeBySearch(pageNo, pageSize, search, sortBy);
-        // return PageResponse.builder()
-        // .pageNo(null)
-        // .pageSize(null)
-        // .pageTotal(null)
-        // .data(itemProductDao.getListEmployeeBySearch(pageNo, pageSize, search,
-        // sortBy).stream()
-        // .map(itemProduct -> ItemProductConvert.convertToItemProductDTO(
-        // itemProduct))
-        // .toList())
-        // .build();
     }
 
 }

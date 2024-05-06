@@ -1,5 +1,6 @@
 package vn.shortsoft.products.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,7 @@ import lombok.Setter;
 @Entity
 @DynamicUpdate
 @Table(name = "product_items")
-public class ItemProduct extends BaseEntity {
+public class ItemProduct extends BaseEntity{
 
     @Column(name = "item_name")
     private String itemName;

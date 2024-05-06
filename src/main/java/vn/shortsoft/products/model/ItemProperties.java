@@ -1,5 +1,7 @@
 package vn.shortsoft.products.model;
 
+import java.io.Serializable;
+
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
@@ -21,7 +23,7 @@ import lombok.Setter;
 @Component
 @Entity
 @Table(name = "product_items_properties")
-public class ItemProperties extends BaseEntity {
+public class ItemProperties extends BaseEntity{
 
     @Column(name = "made_in")
     private String madeIn;

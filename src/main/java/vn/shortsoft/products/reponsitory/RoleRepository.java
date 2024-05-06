@@ -8,6 +8,6 @@ import vn.shortsoft.products.model.Roles;
 
 @Repository
 public interface RoleRepository extends CrudRepository<Roles, Long> {
-    Roles findFirstByName(String role);
+    // Roles findFirstByName(String role);
 
 }

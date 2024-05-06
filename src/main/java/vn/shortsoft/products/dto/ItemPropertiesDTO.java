@@ -2,12 +2,17 @@ package vn.shortsoft.products.dto;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemPropertiesDTO implements Serializable{
+    private static final long serialVersionUID = 1L;
     private String madeIn;
     private Float price;
     private String size;

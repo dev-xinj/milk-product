@@ -18,17 +18,17 @@ public class CreateRole implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (roleRepository.count() == 0) {
-            Roles adminRole = Roles.builder().name("admin").build();
-            Roles customerRole = Roles.builder().name("customer").build();
-            roleRepository.save(adminRole);
-            roleRepository.save(customerRole);
-            log.info(">>>> Created admin and customer roles...");
-        }
-        System.out.println(">>> Hello from the CreateRoles CommandLineRunner...");
+        // if (roleRepository.count() == 0) {
+        //     Roles adminRole = Roles.builder().name("admin").build();
+        //     Roles customerRole = Roles.builder().name("customer").build();
+        //     roleRepository.save(adminRole);
+        //     roleRepository.save(customerRole);
+        //     log.info(">>>> Created admin and customer roles...");
+        // }
+        // System.out.println(">>> Hello from the CreateRoles CommandLineRunner...");
     }
 
-    public Roles findFirstByName() {
-        return roleRepository.findFirstByName("admin");
-    }
+    // public Roles findFirstByName() {
+    //     return roleRepository.findFirstByName("admin");
+    // }
 }
