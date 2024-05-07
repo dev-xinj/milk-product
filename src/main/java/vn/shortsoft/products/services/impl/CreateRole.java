@@ -6,7 +6,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
-import vn.shortsoft.products.model.Roles;
 import vn.shortsoft.products.reponsitory.RoleRepository;
 
 @Component

@@ -46,6 +46,12 @@ public class ItemProductConvert {
                                 .totalNumber(itemProduct.getTotalNumber())
                                 .description(itemProduct.getDescription())
                                 .seeNumber(itemProduct.getSeeNumber())
+                                .createdBy(itemProduct.getCreatedBy())
+                                .createdDate(itemProduct.getCreatedDate())
+                                .updatedBy(itemProduct.getUpdatedBy())
+                                .updatedDate(itemProduct.getUpdatedDate())
+                                .id(itemProduct.getId())
+                                .user(itemProduct.getUser())
                                 .listItemPropertiesDto(
                                                 ItemPropertiesConvert.convertMultiToItemPropertiesDTO(
                                                                 itemProduct.getListItemProperties()))

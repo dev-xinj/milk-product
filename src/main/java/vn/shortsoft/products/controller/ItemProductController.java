@@ -6,10 +6,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,7 +67,6 @@ public class ItemProductController {
         }
 
         @GetMapping("{id}")
-        // @Cacheable(value = "getItemProductById",key = "#id")
         public ResponseEntity<ResponseObject> getItemProductById(@PathVariable Long id) {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(new ResponseObject(HttpStatus.OK.name(), "Successfully",
@@ -94,6 +93,12 @@ public class ItemProductController {
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(new ResponseObject(HttpStatus.OK.name(), "Update Successfully",
                                                 itemProductService.updateItem(id, itemProductDTO)));
+        }
+
+        @DeleteMapping("{id}")
+        public ResponseEntity<ResponseObject> deleteById(@PathVariable Long id){
+                itemProductService.deleteById(id);
+                return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject(HttpStatus.OK.name(), "Delete Success"));
         }
 
         @PostMapping("/redis")

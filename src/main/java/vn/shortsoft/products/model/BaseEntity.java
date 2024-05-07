@@ -18,13 +18,15 @@ import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import vn.shortsoft.products.enums.StatusEnum;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 @MappedSuperclass
-public abstract class BaseEntity{
+public abstract class BaseEntity implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

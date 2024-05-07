@@ -1,15 +1,15 @@
 package vn.shortsoft.products.model;
 
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
 
-import lombok.Getter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-public class User {
+@AllArgsConstructor
+public class User implements Serializable{
     private Long id;
     private String userName;
     private String fullName;

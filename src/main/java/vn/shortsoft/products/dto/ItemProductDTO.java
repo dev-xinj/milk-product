@@ -4,16 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import vn.shortsoft.products.model.BaseEntity;
 import vn.shortsoft.products.model.User;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class ItemProductDTO implements Serializable {
+@SuperBuilder
+public class ItemProductDTO extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
     private String itemName;
@@ -28,6 +29,7 @@ public class ItemProductDTO implements Serializable {
     private String description;
     private User user;
     private List<ItemPropertiesDTO> listItemPropertiesDto;
+
 
 
 }

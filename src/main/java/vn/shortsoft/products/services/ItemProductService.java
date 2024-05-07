@@ -7,7 +7,7 @@ import vn.shortsoft.products.model.ItemProduct;
 import vn.shortsoft.products.response.PageResponse;
 
 public interface ItemProductService {
-    Long saveItem(ItemProductDTO itemProduct);
+    ItemProductDTO saveItem(ItemProductDTO itemProduct);
 
     PageResponse<?> getAllItemProduct(int pageNo, int pageSize, String sortBy);
 
