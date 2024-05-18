@@ -5,14 +5,18 @@ import org.springframework.stereotype.Component;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Component
 @Entity
-@Table(name = "user")
+@Table(name = "s_user")
 public class User extends BaseEntity {
 
     @Column(name = "user_name")

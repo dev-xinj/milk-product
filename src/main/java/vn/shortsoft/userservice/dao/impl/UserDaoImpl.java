@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import vn.shortsoft.userservice.dao.UserDao;
+import vn.shortsoft.userservice.exception.NotFoundResource;
 import vn.shortsoft.userservice.model.User;
 import vn.shortsoft.userservice.repository.UserRepository;
 
@@ -13,6 +14,9 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private UserRepository userRepository;
 
+
+
+    //Create and Update
     @Override
     public Long saveUser(User user) {
         if (user.getId() == null) {
@@ -26,9 +30,12 @@ public class UserDaoImpl implements UserDao {
         return user.getId();
     }
 
+    //Get User by Id
     @Override
     public User getUserById(Long id) {
         return userRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException());
+        .orElseThrow(() -> new NotFoundResource("Not Found User By Id: " + id ));
     }
+
+
 }
