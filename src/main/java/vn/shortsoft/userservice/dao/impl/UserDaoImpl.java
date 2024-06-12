@@ -1,5 +1,7 @@
 package vn.shortsoft.userservice.dao.impl;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,5 +39,15 @@ public class UserDaoImpl implements UserDao {
         .orElseThrow(() -> new NotFoundResource("Not Found User By Id: " + id ));
     }
 
+    @Override
+    public User getUserByEmail(String email) {
+        Optional<User> optUser = userRepository.findByEmail(email);
+        return optUser.isPresent() ? optUser.get() : null;
+    }
 
+    @Override
+    public User getUserByUserName(String userName) {
+        Optional<User> optUser = userRepository.findByUserName(userName);
+        return optUser.isPresent() ? optUser.get() : null;
+    }
 }
