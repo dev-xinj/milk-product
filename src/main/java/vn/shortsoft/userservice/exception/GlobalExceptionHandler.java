@@ -18,6 +18,12 @@ public class GlobalExceptionHandler {
         ErrorResponse error = setErrorResponse(e, request, HttpStatus.CONFLICT);
         return error;
     }
+    @ExceptionHandler(NotExistResourceException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse notExistResourceException(Exception e, WebRequest request) {
+        ErrorResponse error = setErrorResponse(e, request, HttpStatus.NOT_FOUND);
+        return error;
+    }
 
     @ExceptionHandler(IncorrectPasswordException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
