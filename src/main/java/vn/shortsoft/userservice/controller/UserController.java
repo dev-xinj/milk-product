@@ -1,5 +1,8 @@
 package vn.shortsoft.userservice.controller;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,8 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import vn.shortsoft.userservice.dto.UserDto;
+import vn.shortsoft.userservice.model.Roles;
 import vn.shortsoft.userservice.model.User;
-import vn.shortsoft.userservice.response.DataResponse;
+import vn.shortsoft.userservice.model.UserRoles;
 import vn.shortsoft.userservice.service.UserService;
 
 @RestController
@@ -59,9 +62,13 @@ public class UserController {
 
     }
 
-    @GetMapping("/hello")
-    public String getMethodName() {
-        return "Helloworld";
+    @PostMapping("/hello")
+    public ResponseEntity<?> getMethodName() {
+        Set<UserRoles> ur = new HashSet<>();
+        ur.add(new UserRoles(new User(),new Roles()));
+        return ResponseEntity.ok().body(new User().builder()
+        .userRoles(ur)
+        .build());
     }
 
 }
