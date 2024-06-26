@@ -6,7 +6,7 @@ import vn.shortsoft.userservice.response.DataResponse;
 
 public interface UserService {
 
-    Long saveUser(User user);
+    Long saveUser(UserDto user);
 
     User getUserById(Long id);
 

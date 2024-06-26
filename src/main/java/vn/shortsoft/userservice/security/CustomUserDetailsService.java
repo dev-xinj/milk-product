@@ -13,11 +13,13 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.userservice.model.User;
 import vn.shortsoft.userservice.repository.UserRepository;
 
+@Log4j2
 @Service
-public class CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
         @Autowired
         UserRepository userRepository;
@@ -25,6 +27,7 @@ public class CustomUserDetailService implements UserDetailsService {
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
                 // TODO Auto-generated method stub
+                log.info("vào đây");
                 User user = userRepository.findByUserName(username)
                                 .orElseThrow(() -> new UnsupportedOperationException(
                                                 "Unimplemented method 'loadUserByUsername'"));

@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,6 +20,8 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+
+import vn.shortsoft.userservice.security.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
@@ -38,14 +41,21 @@ public class UserSecurityConfig {
         return httpSecurity.build();
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+        // Implement UserDetailsService and return it here
+        return new CustomUserDetailsService();
+    }
+
     // @Bean
-    // public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-    //     UserDetails user = User.builder()
-    //             .username("tai1")
-    //             .password(passwordEncoder.encode("123"))
-    //             .roles("USER")
-    //             .build();
-    //     return new InMemoryUserDetailsManager(user);
+    // public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder)
+    // {
+    // UserDetails user = User.builder()
+    // .username("tai1")
+    // .password(passwordEncoder.encode("123"))
+    // .roles("USER")
+    // .build();
+    // return new InMemoryUserDetailsManager(user);
     // }
 
     @Bean

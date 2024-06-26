@@ -3,6 +3,7 @@ package vn.shortsoft.userservice.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Column;

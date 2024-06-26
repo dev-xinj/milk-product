@@ -34,13 +34,13 @@ public class UserController {
     AuthenticationManager authenticationManager;
 
     @PostMapping("register")
-    public ResponseEntity<?> register(@RequestBody User user) {
+    public ResponseEntity<?> register(@RequestBody UserDto user) {
         Long id = userService.saveUser(user);
         return ResponseEntity.ok().body(id);
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody UserDto userDto, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         try {
             // Xác thực người dùng
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
@@ -48,13 +48,10 @@ public class UserController {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            // Lưu thông tin người dùng vào session
-            HttpSession session = request.getSession();
-            session.setAttribute("user", authentication.getPrincipal());
-
             // Trả về thông tin người dùng
             return ResponseEntity.ok(authentication.getPrincipal());
         } catch (AuthenticationException e) {
+            
             // Xử lý lỗi xác thực
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -64,11 +61,12 @@ public class UserController {
 
     @PostMapping("/hello")
     public ResponseEntity<?> getMethodName() {
+
         Set<UserRoles> ur = new HashSet<>();
-        ur.add(new UserRoles(new User(),new Roles()));
-        return ResponseEntity.ok().body(new User().builder()
-        .userRoles(ur)
-        .build());
+        ur.add(new UserRoles(new User(), new Roles()));
+        return ResponseEntity.ok().body(UserDto.builder()
+                .userRoles(ur)
+                .build());
     }
 
 }
