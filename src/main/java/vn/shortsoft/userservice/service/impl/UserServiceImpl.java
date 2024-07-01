@@ -1,8 +1,5 @@
 package vn.shortsoft.userservice.service.impl;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -12,15 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSObject;
-import com.nimbusds.jose.KeyLengthException;
-import com.nimbusds.jose.Payload;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jwt.JWTClaimsSet;
 
 import lombok.extern.slf4j.Slf4j;
 import vn.shortsoft.userservice.dao.UserDao;
@@ -35,6 +23,7 @@ import vn.shortsoft.userservice.repository.RolesRepository;
 import vn.shortsoft.userservice.response.DataResponse;
 import vn.shortsoft.userservice.service.RolesService;
 import vn.shortsoft.userservice.service.UserService;
+import vn.shortsoft.userservice.utils.JwtUtil;
 
 @Service
 @Slf4j
@@ -45,8 +34,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RolesRepository rolesRepository;
 
-    private Instant expirationTime = Instant.now().plus(1, ChronoUnit.HOURS);
-    private String secretKey = "24q5PhwxA02MndFFZ9HZmeBQ2w54wU7TvQgux189O0gjqizOeSbLBnGcFsXvPqxx";
+    
     @Autowired
     private UserDao userDao;
 
@@ -128,7 +116,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public DataResponse verifyLoginByPassword(UserDto userDto) {
+    public DataResponse login(UserDto userDto) {
         if (getUserByEmail(userDto.getEmail()) == null) {
             throw new NotExistResourceException("Email không tồn tại");
         } else {
@@ -140,7 +128,7 @@ public class UserServiceImpl implements UserService {
 
                 if (verifyPassword) {
                     Map<String, String> map = new HashMap<>();
-                    String token = generateToken(userDto);
+                    String token = JwtUtil.generateAccessToken(userDto);
                     map.put("token", token);
                     return DataResponse.builder()
                             .code(200)
@@ -167,35 +155,5 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public DataResponse verifyLoginByJwt(String jwt) {
-        return DataResponse.builder().build();
-    }
-
-    private String generateToken(UserDto userDto) {
-        JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
-
-        JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
-                .issueTime(new Date())
-                .issuer("shortsoft.vn")
-                .subject(null)
-                .expirationTime(Date.from(expirationTime))
-                .audience("123")
-
-                .build();
-
-        Payload payload = new Payload(jwtClaimSet.toJSONObject());
-        JWSObject jwsObject = new JWSObject(jwsHeader, payload);
-
-        try {
-            jwsObject.sign(new MACSigner(secretKey.getBytes()));
-            return jwsObject.serialize();
-        } catch (KeyLengthException e) {
-            log.info("Độ dài của Secret Key không đúng: ");
-        } catch (JOSEException e) {
-            log.info(e.getMessage());
-        }
-        return null;
-    }
 
 }

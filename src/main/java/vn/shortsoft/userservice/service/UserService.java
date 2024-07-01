@@ -14,7 +14,6 @@ public interface UserService {
 
     User getUserByUserName(String userName);
 
-    DataResponse verifyLoginByPassword(UserDto userDto);
+    DataResponse login(UserDto userDto);
 
-    DataResponse verifyLoginByJwt(String jwt);
 }

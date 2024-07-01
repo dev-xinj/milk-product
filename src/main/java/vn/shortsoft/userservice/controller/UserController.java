@@ -49,7 +49,7 @@ public class UserController {
             // SecurityContextHolder.getContext().setAuthentication(authentication);
 
             // Trả về thông tin người dùng
-            return ResponseEntity.ok(userService.verifyLoginByPassword(userDto));
+            return ResponseEntity.ok(userService.login(userDto));
         } catch (RuntimeException e) {
 
             // Xử lý lỗi xác thực
