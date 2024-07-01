@@ -9,7 +9,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,12 +20,16 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import vn.shortsoft.userservice.security.CustomUserDetailsService;
+import lombok.RequiredArgsConstructor;
+import vn.shortsoft.userservice.repository.UserRepository;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class UserSecurityConfig {
     private String secretKey = "24q5PhwxA02MndFFZ9HZmeBQ2w54wU7TvQgux189O0gjqizOeSbLBnGcFsXvPqxx";
+
+    private final UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -41,11 +44,19 @@ public class UserSecurityConfig {
         return httpSecurity.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        // Implement UserDetailsService and return it here
-        return new CustomUserDetailsService();
-    }
+    // @Bean
+    // public AuthenticationProvider authenticationProvider() {
+    //     DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+    //     authenticationProvider.setUserDetailsService(userDetailsService());
+    //     authenticationProvider.setPasswordEncoder(passwordEncoder());
+    //     return authenticationProvider;
+    // }
+
+    // @Bean
+    // public UserDetailsService userDetailsService() {
+    //     // Implement UserDetailsService and return it here
+    //     return new CustomUserDetailsService();
+    // }
 
     // @Bean
     // public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder)
