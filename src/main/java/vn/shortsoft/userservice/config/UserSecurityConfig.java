@@ -33,10 +33,11 @@ public class UserSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/v1/user/*")
+        httpSecurity.authorizeHttpRequests(request -> request.requestMatchers(HttpMethod.POST, "/v1/public/*")
                 .permitAll()
+                .requestMatchers("/v1/user/*").hasAnyAuthority("USER")
                 .requestMatchers(HttpMethod.POST, "/v1/admin/*").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.GET, "/v1/user/*").hasAnyAuthority("USER")
+                .requestMatchers("/v1/user/*").hasAnyAuthority("USER")
                 .anyRequest()
                 .authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -44,7 +45,8 @@ public class UserSecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .httpBasic(Customizer.withDefaults());
         // httpSecurity.oauth2Login(Customizer.withDefaults());
-        // httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder())));
+        // httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
+        // jwt.decoder(jwtDecoder())));
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         return httpSecurity.build();
     }
@@ -58,7 +60,8 @@ public class UserSecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -75,16 +78,17 @@ public class UserSecurityConfig {
 
     // @Bean
     // public JwtDecoder jwtDecoder() {
-    //     SecretKeySpec secretKeySpec = new SecretKeySpec(JwtContant.SECRET_KEY.getBytes(), MacAlgorithm.HS512.getName());
-    //     return NimbusJwtDecoder.withSecretKey(secretKeySpec)
-    //             .macAlgorithm(MacAlgorithm.HS512)
-    //             .build();
+    // SecretKeySpec secretKeySpec = new
+    // SecretKeySpec(JwtContant.SECRET_KEY.getBytes(),
+    // MacAlgorithm.HS512.getName());
+    // return NimbusJwtDecoder.withSecretKey(secretKeySpec)
+    // .macAlgorithm(MacAlgorithm.HS512)
+    // .build();
     // }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
 }

@@ -6,6 +6,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -19,7 +23,9 @@ import vn.shortsoft.userservice.exception.NotExistResourceException;
 import vn.shortsoft.userservice.exception.NotFoundResource;
 import vn.shortsoft.userservice.model.Roles;
 import vn.shortsoft.userservice.model.User;
+import vn.shortsoft.userservice.model.UserRoles;
 import vn.shortsoft.userservice.repository.RolesRepository;
+import vn.shortsoft.userservice.request.ChangePasswordRequest;
 import vn.shortsoft.userservice.response.DataResponse;
 import vn.shortsoft.userservice.service.RolesService;
 import vn.shortsoft.userservice.service.UserService;
@@ -75,10 +81,18 @@ public class UserServiceImpl implements UserService {
                 Boolean isSave = false;
                 Set<Roles> roles;
                 // line is save Roles
-                roles = userDto.getUserRoles().stream().map(role -> role.getRole()).collect(Collectors.toSet());
+                roles = userDto.getUserRolesDto().stream().map(role -> Roles.builder()
+                        .name(role.getRoleDto().getName())
+                        .code(role.getRoleDto().getCode()).build())
+                        .collect(Collectors.toSet());
                 roles.forEach(role -> rolesService.saveRole(role));
                 // Set UserRoles for user
-                userDto.getUserRoles().stream().forEach(userRole -> user.addUserRoles(userRole));
+
+                roles.stream().forEach(role -> user.addUserRoles(UserRoles.builder()
+                        .role(role)
+                        .build()));
+                // userDto.getUserRolesDto().stream().forEach(userRole ->
+                // user.addUserRoles(UserRoles.builder().build()));
                 isSave = checkEmailAndUserName(user.getEmail(), user.getUserName());
                 if (isSave) {
                     String cryp = passwordEncoder.encode(user.getPassword());
@@ -154,6 +168,34 @@ public class UserServiceImpl implements UserService {
         } else {
             return true;
         }
+    }
+
+    @Override
+    public DataResponse changePassword(ChangePasswordRequest changePasswordRequest) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDao.getUserByUserName(authentication.getName());
+        if (user != null && user.getId() > 0) {
+            if (StringUtils.hasLength(changePasswordRequest.getCurrentPassword())
+                    && StringUtils.hasLength(changePasswordRequest.getNewPassword())) {
+                boolean isTruePassword = passwordEncoder.matches(changePasswordRequest.getCurrentPassword(),
+                        user.getPassword());
+                if (isTruePassword) {
+                    user.setPassword(passwordEncoder.encode(changePasswordRequest.getNewPassword()));
+                    userDao.saveUser(user);
+                } else {
+                    throw new IncorrectPasswordException("Mật khẩu không chính xác");
+                }
+            } else {
+                throw new NotExistResourceException("Mật khẩu không tồn tại");
+            }
+        } else {
+            throw new NotExistResourceException("User không tồn tại");
+        }
+        return DataResponse.builder()
+                .code(HttpStatus.RESET_CONTENT.value())
+                .status(HttpStatus.RESET_CONTENT.name())
+                .message("Change password successfully")
+                .build();
     }
 
 }

@@ -2,6 +2,7 @@ package vn.shortsoft.userservice.service;
 
 import vn.shortsoft.userservice.dto.UserDto;
 import vn.shortsoft.userservice.model.User;
+import vn.shortsoft.userservice.request.ChangePasswordRequest;
 import vn.shortsoft.userservice.response.DataResponse;
 
 public interface UserService {
@@ -16,4 +17,5 @@ public interface UserService {
 
     DataResponse login(UserDto userDto);
 
+    DataResponse changePassword(ChangePasswordRequest changePasswordRequest);
 }
