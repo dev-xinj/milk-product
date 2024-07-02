@@ -4,43 +4,52 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Map;
+import java.util.function.Function;
+
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
 
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.JWSHeader;
 import com.nimbusds.jose.JWSObject;
+import com.nimbusds.jose.JWSVerifier;
 import com.nimbusds.jose.KeyLengthException;
 import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.JWTParser;
+import com.nimbusds.openid.connect.sdk.claims.ClaimsSet;
 
+import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import vn.shortsoft.userservice.contants.JwtContant;
 import vn.shortsoft.userservice.dto.UserDto;
 
 @Log4j2
+@Component
+@Data
 public class JwtUtil {
+
     private static Instant expirationTime = Instant.now().plus(1, ChronoUnit.HOURS); // 1hour
     private static Instant expirationTime24h = Instant.now().plus(24, ChronoUnit.HOURS); // 1hour
-    private static String secretKey = "24q5PhwxA02MndFFZ9HZmeBQ2w54wU7TvQgux189O0gjqizOeSbLBnGcFsXvPqxx";
 
     public static String generateAccessToken(UserDto userDto) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
-
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
                 .issueTime(new Date())
                 .issuer("shortsoft.vn")
-                .subject(null)
+                .subject(userDto.getUserName())
                 .expirationTime(Date.from(expirationTime))
                 .audience("123")
-
                 .build();
 
         Payload payload = new Payload(jwtClaimSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
 
         try {
-            jwsObject.sign(new MACSigner(secretKey.getBytes()));
+            jwsObject.sign(new MACSigner(JwtContant.SECRET_KEY.getBytes()));
             return jwsObject.serialize();
         } catch (KeyLengthException e) {
             log.info("Độ dài của Secret Key không đúng: ");
@@ -50,41 +59,70 @@ public class JwtUtil {
         return null;
     }
 
-    private boolean isValidDate(String token) {
-        JWTClaimsSet claimsSet;
-        try {
-            claimsSet = JWTClaimsSet.parse(token);
-            return claimsSet.getExpirationTime().before(new Date());
-        } catch (ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return false;
-
-    }
-
-    public static String generateRefreshToken(UserDto userDto) {
+    // Refresh Token
+    public static String generateRefreshToken(Map<String, Object> claim, UserDto userDto) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
+        ClaimsSet claimsSet = new ClaimsSet();
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
                 .issueTime(new Date())
                 .issuer("shortsoft.vn")
-                .subject(null)
+                .subject(userDto.getUserName())
                 .expirationTime(Date.from(expirationTime24h))
                 .audience("123")
-
+                .claim("data", claim)
                 .build();
 
-        Payload payload = new Payload(jwtClaimSet.toJSONObject());
+        Payload payload = new Payload(claimsSet.toJSONString());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
 
         try {
-            jwsObject.sign(new MACSigner(secretKey.getBytes()));
+            jwsObject.sign(new MACSigner(JwtContant.SECRET_KEY.getBytes()));
             return jwsObject.serialize();
-        } catch (KeyLengthException e) {
-            log.info("Độ dài của Secret Key không đúng: ");
         } catch (JOSEException e) {
             log.info(e.getMessage());
         }
         return null;
     }
+
+    public boolean isValidToken(String token, UserDetails userDetails) {
+        String userName = extractUserName(token);
+        boolean is = !isValidExpiry(token);
+        return userName.equals(userDetails.getUsername()) && !isValidExpiry(token);
+    }
+
+    private boolean isValidExpiry(String token) {
+        try {
+            return extractClaims(token, t -> t.getExpirationTime()).before(new Date());
+        } catch (JOSEException | ParseException e) {
+            log.info(e.getMessage());
+        }
+        return false;
+    }
+
+    public boolean isVerifyToken(String token) throws JOSEException {
+        try {
+            JWSVerifier jwsVerifier = new MACVerifier(JwtContant.SECRET_KEY.getBytes());
+            return JWSObject.parse(token).verify(jwsVerifier);
+        } catch (JOSEException | ParseException e) {
+            log.info(e.getMessage());
+        }
+        return false;
+    }
+
+    private static <T> T extractClaims(String token, Function<JWTClaimsSet, T> claimTFunction)
+            throws ParseException, JOSEException {
+        JWSObject jwsObject = JWSObject.parse(token);
+
+        return claimTFunction.apply(JWTClaimsSet.parse(jwsObject.getPayload().toJSONObject()));
+    }
+
+    public static String extractUserName(String token) {
+        try {
+            return extractClaims(token, JWTClaimsSet::getSubject);
+        } catch (JOSEException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

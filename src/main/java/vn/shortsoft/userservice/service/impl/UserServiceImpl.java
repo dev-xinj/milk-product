@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RolesRepository rolesRepository;
 
-    
     @Autowired
     private UserDao userDao;
 
@@ -122,14 +121,16 @@ public class UserServiceImpl implements UserService {
         } else {
             User user = getUserByUserName(userDto.getUserName());
             if (user == null) {
-                throw new NotExistResourceException("Email không tồn tại");
+                throw new NotExistResourceException("User không tồn tại");
             } else {
                 Boolean verifyPassword = passwordEncoder.matches(userDto.getPassword(), user.getPassword());
 
                 if (verifyPassword) {
                     Map<String, String> map = new HashMap<>();
-                    String token = JwtUtil.generateAccessToken(userDto);
-                    map.put("token", token);
+                    String accesstoken = JwtUtil.generateAccessToken(userDto);
+                    String refreshToken = JwtUtil.generateRefreshToken(new HashMap<>(), userDto);
+                    log.info("user name: " + JwtUtil.extractUserName(accesstoken));
+                    map.put("Access token", accesstoken);
                     return DataResponse.builder()
                             .code(200)
                             .status("OK")
@@ -154,6 +155,5 @@ public class UserServiceImpl implements UserService {
             return true;
         }
     }
-
 
 }

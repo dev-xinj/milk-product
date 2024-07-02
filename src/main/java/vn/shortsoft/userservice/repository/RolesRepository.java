@@ -10,7 +10,7 @@ import vn.shortsoft.userservice.model.Roles;
 
 @Repository
 public interface RolesRepository extends JpaRepository<Roles, Long> {
-
+    
     Optional<Set<Roles>> findByName(String name);
 
 }
