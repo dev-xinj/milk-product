@@ -99,7 +99,7 @@ public class JwtUtil {
         return false;
     }
 
-    public boolean isVerifyToken(String token) throws JOSEException {
+    public boolean isVerifyToken(String token) {
         try {
             JWSVerifier jwsVerifier = new MACVerifier(JwtContant.SECRET_KEY.getBytes());
             return JWSObject.parse(token).verify(jwsVerifier);

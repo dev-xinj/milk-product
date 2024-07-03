@@ -7,7 +7,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import vn.shortsoft.userservice.convert.ConvertObjectToDto;
 import vn.shortsoft.userservice.dao.UserDao;
 import vn.shortsoft.userservice.dto.UserDto;
 import vn.shortsoft.userservice.exception.ExistResourceException;
@@ -24,9 +24,11 @@ import vn.shortsoft.userservice.exception.NotFoundResource;
 import vn.shortsoft.userservice.model.Roles;
 import vn.shortsoft.userservice.model.User;
 import vn.shortsoft.userservice.model.UserRoles;
+import vn.shortsoft.userservice.model.UserSession;
 import vn.shortsoft.userservice.repository.RolesRepository;
 import vn.shortsoft.userservice.request.ChangePasswordRequest;
 import vn.shortsoft.userservice.response.DataResponse;
+import vn.shortsoft.userservice.response.RegisterResponse;
 import vn.shortsoft.userservice.service.RolesService;
 import vn.shortsoft.userservice.service.UserService;
 import vn.shortsoft.userservice.utils.JwtUtil;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
     private RolesService rolesService;
 
     @Override
-    public Long saveUser(UserDto userDto) {
+    public DataResponse saveUser(UserDto userDto) {
         User user;
         if (userDto != null) {
             if (userDto.getId() != null) { // Có ID thì vào cập nhật dữ liệu
@@ -69,7 +71,11 @@ public class UserServiceImpl implements UserService {
                         throw new IncorrectPasswordException("Password Incorrect");
                     }
                 }
-                return userDao.saveUser(user);
+                return DataResponse.builder()
+                        .code(HttpStatus.OK.value())
+                        .message("Cập nhật thành công")
+                        .status(HttpStatus.OK.name())
+                        .build();
             } else { // Ngược lại. Tạo mới dữ liệu
                 user = User.builder()
                         .userName(userDto.getUserName())
@@ -86,18 +92,28 @@ public class UserServiceImpl implements UserService {
                         .code(role.getRoleDto().getCode()).build())
                         .collect(Collectors.toSet());
                 roles.forEach(role -> rolesService.saveRole(role));
+                // set User Session
+                UserSession userSession = userDto.getUserSession();
+                user.addUserSession(userSession);
                 // Set UserRoles for user
-
                 roles.stream().forEach(role -> user.addUserRoles(UserRoles.builder()
                         .role(role)
                         .build()));
-                // userDto.getUserRolesDto().stream().forEach(userRole ->
-                // user.addUserRoles(UserRoles.builder().build()));
+                String accessToken = JwtUtil.generateAccessToken(userDto);
                 isSave = checkEmailAndUserName(user.getEmail(), user.getUserName());
                 if (isSave) {
                     String cryp = passwordEncoder.encode(user.getPassword());
                     user.setPassword(cryp);
-                    return userDao.saveUser(user);
+                    Long id = userDao.saveUser(user);
+                    return DataResponse.builder()
+                            .code(HttpStatus.CREATED.value())
+                            .data(RegisterResponse.builder()
+                                    .accessToken(accessToken)
+                                    .id(id)
+                                    .build())
+                            .message("Tạo user thành công")
+                            .status(HttpStatus.CREATED.name())
+                            .build();
                 }
             }
         }
@@ -106,23 +122,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return userDao.getUserById(id);
+    public UserDto getUserById(Long id) {
+        return ConvertObjectToDto.convertUserToUserDto(userDao.getUserById(id));
     }
 
     @Override
-    public User getUserByEmail(String email) {
+    public UserDto getUserByEmail(String email) {
         if (StringUtils.hasLength(email)) {
-            return userDao.getUserByEmail(email);
+            User u = userDao.getUserByEmail(email);
+            return ConvertObjectToDto.convertUserToUserDto(u);
         } else {
             return null;
         }
     }
 
     @Override
-    public User getUserByUserName(String userName) {
+    public UserDto getUserByUserName(String userName) {
         if (StringUtils.hasLength(userName)) {
-            return userDao.getUserByUserName(userName);
+            return ConvertObjectToDto.convertUserToUserDto(userDao.getUserByUserName(userName));
         } else {
             return null;
         }
@@ -133,7 +150,7 @@ public class UserServiceImpl implements UserService {
         if (getUserByEmail(userDto.getEmail()) == null) {
             throw new NotExistResourceException("Email không tồn tại");
         } else {
-            User user = getUserByUserName(userDto.getUserName());
+            User user = userDao.getUserByUserName(userDto.getUserName());
             if (user == null) {
                 throw new NotExistResourceException("User không tồn tại");
             } else {

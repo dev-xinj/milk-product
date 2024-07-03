@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import vn.shortsoft.userservice.model.UserSession;
 
 @Data
 @Builder
@@ -18,5 +19,6 @@ public class UserDto implements Serializable{
     String password;
     String email;
     String phoneNumber;
+    UserSession userSession;
     Set<UserRolesDto> userRolesDto;
 }

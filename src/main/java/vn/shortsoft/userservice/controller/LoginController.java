@@ -8,19 +8,23 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import vn.shortsoft.userservice.dto.UserDto;
 import vn.shortsoft.userservice.service.UserService;
 
 @RestController
 @RequestMapping("/v1/public")
 public class LoginController {
-@Autowired
+    @Autowired
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDto user) {
-        Long id = userService.saveUser(user);
-        return ResponseEntity.ok().body(id);
+    public ResponseEntity<?> register(@RequestBody UserDto user, HttpServletRequest request) {
+        HttpSession httpSession = request.getSession();
+        user.getUserSession().setSessionId(httpSession.getId());
+        return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     @PostMapping("login")
@@ -32,4 +36,10 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
     }
+
+    @PostMapping("logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        return ResponseEntity.ok().body("hell");
+    }
+
 }

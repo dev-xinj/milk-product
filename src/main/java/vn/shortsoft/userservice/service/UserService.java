@@ -7,13 +7,13 @@ import vn.shortsoft.userservice.response.DataResponse;
 
 public interface UserService {
 
-    Long saveUser(UserDto user);
+    DataResponse saveUser(UserDto user);
 
-    User getUserById(Long id);
+    UserDto getUserById(Long id);
 
-    User getUserByEmail(String email);
+    UserDto getUserByEmail(String email);
 
-    User getUserByUserName(String userName);
+    UserDto getUserByUserName(String userName);
 
     DataResponse login(UserDto userDto);
 

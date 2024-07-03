@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import vn.shortsoft.userservice.filter.JwtAuthFilter;
 import vn.shortsoft.userservice.security.CustomUserDetailsService;
@@ -43,6 +44,8 @@ public class UserSecurityConfig {
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .logout(logout -> logout.logoutUrl("/v1/user/logout")
+                        .addLogoutHandler(new SecurityContextLogoutHandler()).invalidateHttpSession(true))
                 .httpBasic(Customizer.withDefaults());
         // httpSecurity.oauth2Login(Customizer.withDefaults());
         // httpSecurity.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->

@@ -43,6 +43,9 @@ public class User extends BaseEntity {
     private String phoneNumber;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserSession> userSessions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserRoles> userRoles;
 
     public void addUserRoles(UserRoles userRole) {
@@ -52,6 +55,16 @@ public class User extends BaseEntity {
             }
             userRoles.add(userRole);
             userRole.setUser(this);
+        }
+    }
+
+    public void addUserSession(UserSession userSession) {
+        if (userSession != null) {
+            if (userSessions == null) {
+                userSessions = new HashSet<>();
+            }
+            userSessions.add(userSession);
+            userSession.setUser(this);
         }
     }
 }

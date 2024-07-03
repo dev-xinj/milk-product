@@ -1,4 +1,4 @@
-package vn.shortsoft.userservice.dto;
+package vn.shortsoft.userservice.response;
 
 import java.io.Serializable;
 
@@ -8,10 +8,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRolesDto implements Serializable{
+@Builder
+public class RegisterResponse implements Serializable {
     private Long id;
-    private RoleDto roleDto;
+    private String accessToken;
+
 }
