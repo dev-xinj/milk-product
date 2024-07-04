@@ -23,6 +23,7 @@ import vn.shortsoft.userservice.utils.JwtUtil;
 public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     JwtUtil jwtUtil;
+    
     @Autowired
     CustomUserDetailsService customUserDetailsService;
 

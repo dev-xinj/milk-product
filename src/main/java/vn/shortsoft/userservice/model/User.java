@@ -8,21 +8,19 @@ import org.springframework.stereotype.Component;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import vn.shortsoft.userservice.listener.UserListener;
 
 @SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
-@EntityListeners(UserListener.class)
 @Entity
 @Table(name = "s_user")
 public class User extends BaseEntity {
@@ -42,7 +40,7 @@ public class User extends BaseEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserSession> userSessions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

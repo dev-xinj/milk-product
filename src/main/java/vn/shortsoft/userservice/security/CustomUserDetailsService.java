@@ -1,8 +1,6 @@
 package vn.shortsoft.userservice.security;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.userservice.model.User;
-import vn.shortsoft.userservice.model.UserRoles;
 import vn.shortsoft.userservice.repository.UserRepository;
 import vn.shortsoft.userservice.repository.UserRolesRepository;
 import vn.shortsoft.userservice.service.RolesService;
@@ -40,9 +37,11 @@ public class CustomUserDetailsService implements UserDetailsService {
                 User user = userRepository.findByUserName(username)
                                 .orElseThrow(() -> new UnsupportedOperationException(
                                                 "Unimplemented method 'loadUserByUsername'"));
-                user.getUserRoles().stream().forEach(userRole -> user.addUserRoles(userRolesRepository.findById(userRole.getId()).get()));
+                user.getUserRoles().stream().forEach(
+                                userRole -> user.addUserRoles(userRolesRepository.findById(userRole.getId()).get()));
                 List<GrantedAuthority> authorities = user.getUserRoles().stream()
-                                .map(role -> new SimpleGrantedAuthority(rolesService.getRoleById(role.getRole().getId()).getName()))
+                                .map(role -> new SimpleGrantedAuthority(
+                                                rolesService.getRoleById(role.getRole().getId()).getName()))
                                 .collect(Collectors.toList());
 
                 return new CustomUserDetails(user, authorities);

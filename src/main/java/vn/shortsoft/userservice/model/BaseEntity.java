@@ -3,10 +3,10 @@ package vn.shortsoft.userservice.model;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -18,12 +18,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import vn.shortsoft.userservice.enums.Status;
+import vn.shortsoft.userservice.listener.BaseListener;
 
 @Data
 @SuperBuilder
 @MappedSuperclass
 @AllArgsConstructor
 @NoArgsConstructor
+@EntityListeners(BaseListener.class)
 @Component
 public abstract class BaseEntity implements Serializable {
     @Id

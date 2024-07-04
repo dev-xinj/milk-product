@@ -1,5 +1,7 @@
 package vn.shortsoft.userservice.service.impl;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +27,6 @@ import vn.shortsoft.userservice.model.Roles;
 import vn.shortsoft.userservice.model.User;
 import vn.shortsoft.userservice.model.UserRoles;
 import vn.shortsoft.userservice.model.UserSession;
-import vn.shortsoft.userservice.repository.RolesRepository;
 import vn.shortsoft.userservice.request.ChangePasswordRequest;
 import vn.shortsoft.userservice.response.DataResponse;
 import vn.shortsoft.userservice.response.RegisterResponse;
@@ -38,9 +39,6 @@ import vn.shortsoft.userservice.utils.JwtUtil;
 public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private RolesRepository rolesRepository;
 
     @Autowired
     private UserDao userDao;
@@ -94,12 +92,16 @@ public class UserServiceImpl implements UserService {
                 roles.forEach(role -> rolesService.saveRole(role));
                 // set User Session
                 UserSession userSession = userDto.getUserSession();
+                String accessToken = JwtUtil.generateAccessToken(userDto);
+                String refreshToken = JwtUtil.generateRefreshToken(new HashMap<>(), userDto);
+                userSession.setAccessToken(accessToken);
+                userSession.setRefreshToken(refreshToken);
+                userSession.setExpirationTime(new Timestamp(new Date().getTime()));
                 user.addUserSession(userSession);
                 // Set UserRoles for user
                 roles.stream().forEach(role -> user.addUserRoles(UserRoles.builder()
                         .role(role)
                         .build()));
-                String accessToken = JwtUtil.generateAccessToken(userDto);
                 isSave = checkEmailAndUserName(user.getEmail(), user.getUserName());
                 if (isSave) {
                     String cryp = passwordEncoder.encode(user.getPassword());

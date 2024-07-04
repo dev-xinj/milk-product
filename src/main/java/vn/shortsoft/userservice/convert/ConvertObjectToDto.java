@@ -11,28 +11,41 @@ import vn.shortsoft.userservice.model.UserRoles;
 
 public class ConvertObjectToDto {
     public static UserDto convertUserToUserDto(User user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .userName(user.getEmail())
-                .phoneNumber(user.getEmail())
-                .userRolesDto(user.getUserRoles().stream().map(userRole -> convertUserRolesDto(userRole))
-                        .collect(Collectors.toSet()))
-                .build();
+        if (user != null) {
+            return UserDto.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .userName(user.getUserName())
+                    .phoneNumber(user.getPhoneNumber())
+                    .userRolesDto(user.getUserRoles().stream().map(userRole -> convertUserRolesDto(userRole))
+                            .collect(Collectors.toSet()))
+                    .build();
+        } else {
+            return null;
+        }
+
     }
 
     public static UserRolesDto convertUserRolesDto(UserRoles userRole) {
-        return UserRolesDto.builder()
-                .id(userRole.getId())
-                .roleDto(convertRoleDto(userRole.getRole()))
-                .build();
+        if (userRole != null) {
+            return UserRolesDto.builder()
+                    .id(userRole.getId())
+                    .roleDto(convertRoleDto(userRole.getRole()))
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     public static RoleDto convertRoleDto(Roles role) {
-        return RoleDto.builder()
-                .id(role.getId())
-                .name(role.getName())
-                .code(role.getCode())
-                .build();
+        if (role != null) {
+            return RoleDto.builder()
+                    .id(role.getId())
+                    .name(role.getName())
+                    .code(role.getCode())
+                    .build();
+        } else {
+            return null;
+        }
     }
 }

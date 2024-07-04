@@ -20,7 +20,6 @@ import com.nimbusds.jose.Payload;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.openid.connect.sdk.claims.ClaimsSet;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
@@ -62,7 +61,6 @@ public class JwtUtil {
     // Refresh Token
     public static String generateRefreshToken(Map<String, Object> claim, UserDto userDto) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
-        ClaimsSet claimsSet = new ClaimsSet();
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
                 .issueTime(new Date())
                 .issuer("shortsoft.vn")
@@ -72,7 +70,7 @@ public class JwtUtil {
                 .claim("data", claim)
                 .build();
 
-        Payload payload = new Payload(claimsSet.toJSONString());
+        Payload payload = new Payload(jwtClaimSet.toJSONObject());
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
 
         try {

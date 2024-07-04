@@ -2,6 +2,8 @@ package vn.shortsoft.userservice.model;
 
 import java.sql.Timestamp;
 
+import org.springframework.stereotype.Component;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,12 +19,19 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
+@Component
 @Entity
 @Table(name = "s_user_session")
 public class UserSession extends BaseEntity {
 
     @Column(name = "session_id")
     private String sessionId;
+
+    @Column(name = "is_revoked")
+    private Boolean isRevoked;
+
+    @Column(name = "is_expired")
+    private Boolean isExpired;
 
     @Column(name = "expiration_time")
     private Timestamp expirationTime;

@@ -1,6 +1,5 @@
 package vn.shortsoft.userservice.model;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Entity;
