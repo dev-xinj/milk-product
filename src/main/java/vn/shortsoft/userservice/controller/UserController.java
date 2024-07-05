@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import vn.shortsoft.userservice.request.ChangePasswordRequest;
 import vn.shortsoft.userservice.response.DataResponse;
 import vn.shortsoft.userservice.service.UserService;

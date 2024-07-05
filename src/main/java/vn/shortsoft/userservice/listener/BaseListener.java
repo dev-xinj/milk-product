@@ -16,7 +16,7 @@ import vn.shortsoft.userservice.model.BaseEntity;
 public class BaseListener {
     @PrePersist
     public void setDatePersist(BaseEntity baseEntity) {
-        String userName = getContextUserName(t -> t.getName());
+        String userName = getContext(t -> t.getName());
         baseEntity.setCreatedDate(new Timestamp(new Date().getTime()));
         baseEntity.setUpdatedDate(new Timestamp(new Date().getTime()));
         baseEntity.setCreatedBy(userName);
@@ -27,11 +27,11 @@ public class BaseListener {
     @PreUpdate
     public void setDateUpdate(BaseEntity baseEntity) {
         baseEntity.setUpdatedDate(new Timestamp(new Date().getTime()));
-        baseEntity.setUpdatedBy(getContextUserName(t -> t.getName()));
+        baseEntity.setUpdatedBy(getContext(t -> t.getName()));
         log.info("Update current Persist");
     }
 
-    public <T> T getContextUserName(Function<Authentication, T> funcion) {
+    public <T> T getContext(Function<Authentication, T> funcion) {
         return funcion.apply(SecurityContextHolder.getContext().getAuthentication());
     }
 }

@@ -40,7 +40,7 @@ public class User extends BaseEntity {
     @Column(name = "phone_number")
     private String phoneNumber;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private Set<UserSession> userSessions;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

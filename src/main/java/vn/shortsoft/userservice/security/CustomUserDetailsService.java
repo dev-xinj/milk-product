@@ -22,8 +22,10 @@ import vn.shortsoft.userservice.service.RolesService;
 public class CustomUserDetailsService implements UserDetailsService {
         @Autowired
         private UserRepository userRepository;
+        
         @Autowired
         private UserRolesRepository userRolesRepository;
+
         @Autowired
         private RolesService rolesService;
         // public CustomUserDetailsService(UserRepository repository) {

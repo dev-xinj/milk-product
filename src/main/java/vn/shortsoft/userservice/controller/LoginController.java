@@ -12,6 +12,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import vn.shortsoft.userservice.dto.UserDto;
+import vn.shortsoft.userservice.dto.UserSessionDto;
+import vn.shortsoft.userservice.model.UserSession;
 import vn.shortsoft.userservice.service.UserService;
 
 @RestController
@@ -23,13 +25,15 @@ public class LoginController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDto user, HttpServletRequest request) {
         HttpSession httpSession = request.getSession();
-        user.getUserSession().setSessionId(httpSession.getId());
+        user.getUserSession().builder().sessionId(httpSession.getId()).build();
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     @PostMapping("login")
-    public ResponseEntity<?> login(@RequestBody UserDto userDto) {
+    public ResponseEntity<?> login(@RequestBody UserDto userDto, HttpServletRequest request) {
         try {
+            HttpSession httpSession = request.getSession();
+            userDto.setUserSession(UserSessionDto.builder().sessionId(httpSession.getId()).build());
             return ResponseEntity.ok(userService.login(userDto));
         } catch (RuntimeException e) {
 

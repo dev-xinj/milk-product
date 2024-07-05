@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 import vn.shortsoft.userservice.dto.RoleDto;
 import vn.shortsoft.userservice.dto.UserDto;
 import vn.shortsoft.userservice.dto.UserRolesDto;
+import vn.shortsoft.userservice.dto.UserSessionDto;
 import vn.shortsoft.userservice.model.Roles;
 import vn.shortsoft.userservice.model.User;
 import vn.shortsoft.userservice.model.UserRoles;
+import vn.shortsoft.userservice.model.UserSession;
 
 public class ConvertObjectToDto {
     public static UserDto convertUserToUserDto(User user) {
@@ -47,5 +49,20 @@ public class ConvertObjectToDto {
         } else {
             return null;
         }
+    }
+
+    public static UserSessionDto convertUserSessionDto(UserSession userSession) {
+        return UserSessionDto.builder().build();
+    }
+
+    public static UserSession convertUserSession(UserSessionDto userSessionDto) {
+        return UserSession.builder()
+                .accessToken(userSessionDto.getAccessToken())
+                .refreshToken(userSessionDto.getRefreshToken())
+                .expirationTime(userSessionDto.getExpirationTime())
+                .isExpired(userSessionDto.getIsExpired())
+                .isRevoked(userSessionDto.getIsRevoked())
+                .sessionId(userSessionDto.getSessionId())
+                .build();
     }
 }

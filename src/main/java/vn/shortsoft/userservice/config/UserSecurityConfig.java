@@ -20,6 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
 import vn.shortsoft.userservice.filter.JwtAuthFilter;
+import vn.shortsoft.userservice.security.CustomLogoutHanlder;
 import vn.shortsoft.userservice.security.CustomUserDetailsService;
 
 @Configuration
@@ -30,6 +31,8 @@ public class UserSecurityConfig {
     CustomUserDetailsService customUserDetailsService;
 
     @Autowired
+    CustomLogoutHanlder customLogoutHanlder;
+    @Autowired
     JwtAuthFilter jwtAuthFilter;
 
     @Bean
@@ -38,13 +41,13 @@ public class UserSecurityConfig {
                 .permitAll()
                 .requestMatchers("/v1/user/*").hasAnyAuthority("USER")
                 .requestMatchers(HttpMethod.POST, "/v1/admin/*").hasRole("ADMIN")
-                .requestMatchers("/v1/user/*").hasAnyAuthority("USER")
                 .anyRequest()
                 .authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .logout(logout -> logout.logoutUrl("/v1/user/logout")
+                        .addLogoutHandler(customLogoutHanlder)
                         .addLogoutHandler(new SecurityContextLogoutHandler()).invalidateHttpSession(true))
                 .httpBasic(Customizer.withDefaults());
         // httpSecurity.oauth2Login(Customizer.withDefaults());

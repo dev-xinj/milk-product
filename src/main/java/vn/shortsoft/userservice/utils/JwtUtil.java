@@ -23,6 +23,7 @@ import com.nimbusds.jwt.JWTClaimsSet;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import vn.shortsoft.userservice.contants.ExpireContant;
 import vn.shortsoft.userservice.contants.JwtContant;
 import vn.shortsoft.userservice.dto.UserDto;
 
@@ -31,16 +32,16 @@ import vn.shortsoft.userservice.dto.UserDto;
 @Data
 public class JwtUtil {
 
-    private static Instant expirationTime = Instant.now().plus(1, ChronoUnit.HOURS); // 1hour
-    private static Instant expirationTime24h = Instant.now().plus(24, ChronoUnit.HOURS); // 1hour
-
     public static String generateAccessToken(UserDto userDto) {
         JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
         JWTClaimsSet jwtClaimSet = new JWTClaimsSet.Builder()
                 .issueTime(new Date())
                 .issuer("shortsoft.vn")
                 .subject(userDto.getUserName())
-                .expirationTime(Date.from(expirationTime))
+                .claim("sessionId", userDto.getUserSession().getSessionId())
+                .claim("isRevoked", false)
+                .claim("isExpired", false)
+                .expirationTime(Date.from(ExpireContant.EXPIRE_DATE))
                 .audience("123")
                 .build();
 
@@ -65,7 +66,7 @@ public class JwtUtil {
                 .issueTime(new Date())
                 .issuer("shortsoft.vn")
                 .subject(userDto.getUserName())
-                .expirationTime(Date.from(expirationTime24h))
+                .expirationTime(Date.from(ExpireContant.EXPIRE_DATE24))
                 .audience("123")
                 .claim("data", claim)
                 .build();
@@ -84,9 +85,11 @@ public class JwtUtil {
 
     public boolean isValidToken(String token, UserDetails userDetails) {
         String userName = extractUserName(token);
-        boolean is = !isValidExpiry(token);
+        boolean is = userName.equals(userDetails.getUsername());
+        boolean iss = !isValidExpiry(token);
         return userName.equals(userDetails.getUsername()) && !isValidExpiry(token);
     }
+
 
     private boolean isValidExpiry(String token) {
         try {
@@ -100,6 +103,7 @@ public class JwtUtil {
     public boolean isVerifyToken(String token) {
         try {
             JWSVerifier jwsVerifier = new MACVerifier(JwtContant.SECRET_KEY.getBytes());
+            boolean is = JWSObject.parse(token).verify(jwsVerifier);
             return JWSObject.parse(token).verify(jwsVerifier);
         } catch (JOSEException | ParseException e) {
             log.info(e.getMessage());
@@ -110,13 +114,21 @@ public class JwtUtil {
     private static <T> T extractClaims(String token, Function<JWTClaimsSet, T> claimTFunction)
             throws ParseException, JOSEException {
         JWSObject jwsObject = JWSObject.parse(token);
-
         return claimTFunction.apply(JWTClaimsSet.parse(jwsObject.getPayload().toJSONObject()));
     }
 
     public static String extractUserName(String token) {
         try {
             return extractClaims(token, JWTClaimsSet::getSubject);
+        } catch (JOSEException | ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String extractSessionId(String token) {
+        try {
+            return extractClaims(token, t -> t.getClaim("sessionId").toString());
         } catch (JOSEException | ParseException e) {
             e.printStackTrace();
         }

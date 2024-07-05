@@ -14,7 +14,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class UserSessionDto implements Serializable {
     private String sessionId;
-
     private Timestamp expirationTime;
     private Boolean isRevoked;
     private Boolean isExpired;

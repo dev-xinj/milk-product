@@ -1,7 +1,8 @@
 package vn.shortsoft.userservice.service.impl;
 
 import java.sql.Timestamp;
-import java.util.Date;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import vn.shortsoft.userservice.contants.ExpireContant;
 import vn.shortsoft.userservice.convert.ConvertObjectToDto;
 import vn.shortsoft.userservice.dao.UserDao;
 import vn.shortsoft.userservice.dto.UserDto;
@@ -27,6 +29,7 @@ import vn.shortsoft.userservice.model.Roles;
 import vn.shortsoft.userservice.model.User;
 import vn.shortsoft.userservice.model.UserRoles;
 import vn.shortsoft.userservice.model.UserSession;
+import vn.shortsoft.userservice.repository.UserSessionRepository;
 import vn.shortsoft.userservice.request.ChangePasswordRequest;
 import vn.shortsoft.userservice.response.DataResponse;
 import vn.shortsoft.userservice.response.RegisterResponse;
@@ -45,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RolesService rolesService;
+
+    @Autowired
+    UserSessionRepository userSessionRepository;
 
     @Override
     public DataResponse saveUser(UserDto userDto) {
@@ -91,13 +97,7 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toSet());
                 roles.forEach(role -> rolesService.saveRole(role));
                 // set User Session
-                UserSession userSession = userDto.getUserSession();
-                String accessToken = JwtUtil.generateAccessToken(userDto);
-                String refreshToken = JwtUtil.generateRefreshToken(new HashMap<>(), userDto);
-                userSession.setAccessToken(accessToken);
-                userSession.setRefreshToken(refreshToken);
-                userSession.setExpirationTime(new Timestamp(new Date().getTime()));
-                user.addUserSession(userSession);
+
                 // Set UserRoles for user
                 roles.stream().forEach(role -> user.addUserRoles(UserRoles.builder()
                         .role(role)
@@ -110,7 +110,6 @@ public class UserServiceImpl implements UserService {
                     return DataResponse.builder()
                             .code(HttpStatus.CREATED.value())
                             .data(RegisterResponse.builder()
-                                    .accessToken(accessToken)
                                     .id(id)
                                     .build())
                             .message("Tạo user thành công")
@@ -164,6 +163,17 @@ public class UserServiceImpl implements UserService {
                     String refreshToken = JwtUtil.generateRefreshToken(new HashMap<>(), userDto);
                     log.info("user name: " + JwtUtil.extractUserName(accesstoken));
                     map.put("Access token", accesstoken);
+
+                    UserSession userSession = ConvertObjectToDto.convertUserSession(userDto.getUserSession());
+                    userSession.setExpirationTime(new Timestamp(ExpireContant.EXPIRE_DATE.toEpochMilli()));
+                    userSession.setIsExpired(false);
+                    userSession.setIsRevoked(false);
+                    userSession.setAccessToken(accesstoken);
+                    userSession.setRefreshToken(refreshToken);
+                    userSession.getAccessToken();
+                    userSession.setUser(user);
+                    userSessionRepository.save(userSession);
+                    user.addUserSession(userSession);
                     return DataResponse.builder()
                             .code(200)
                             .status("OK")
