@@ -16,6 +16,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import vn.shortsoft.userservice.model.UserSession;
+import vn.shortsoft.userservice.repository.UserSessionRepository;
 import vn.shortsoft.userservice.security.CustomUserDetailsService;
 import vn.shortsoft.userservice.utils.JwtUtil;
 
@@ -23,9 +25,12 @@ import vn.shortsoft.userservice.utils.JwtUtil;
 public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     JwtUtil jwtUtil;
-    
+
     @Autowired
     CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    UserSessionRepository userSessionRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -33,6 +38,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwtToken;
         final String userName;
+        final String sessionId;
         if (!StringUtils.hasLength(authHeader)) {
             filterChain.doFilter(request, response);
             return;
@@ -42,7 +48,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (userName != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
             boolean is = jwtUtil.isValidToken(jwtToken, userDetails);
-            if (jwtUtil.isVerifyToken(jwtToken) && jwtUtil.isValidToken(jwtToken, userDetails)) {
+            sessionId = jwtUtil.extractSessionId(jwtToken);
+
+            UserSession userSession = userSessionRepository.findBySessionId(sessionId).orElse(null);
+            Boolean isValidSession = false;
+            if (userSession != null) {
+                isValidSession = userSession.getIsExpired() == false && userSession.getIsRevoked() == false;
+            }
+
+            if (jwtUtil.isVerifyToken(jwtToken) && jwtUtil.isValidToken(jwtToken, userDetails) && isValidSession) {
                 SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken userToken = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());

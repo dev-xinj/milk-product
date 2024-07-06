@@ -123,21 +123,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long id) {
-        return ConvertObjectToDto.convertUserToUserDto(userDao.getUserById(id));
-    }
-
-    @Override
-    public UserDto getUserByEmail(String email) {
-        if (StringUtils.hasLength(email)) {
-            User u = userDao.getUserByEmail(email);
-            return ConvertObjectToDto.convertUserToUserDto(u);
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public UserDto getUserByUserName(String userName) {
         if (StringUtils.hasLength(userName)) {
             return ConvertObjectToDto.convertUserToUserDto(userDao.getUserByUserName(userName));
@@ -225,6 +210,21 @@ public class UserServiceImpl implements UserService {
                 .status(HttpStatus.RESET_CONTENT.name())
                 .message("Change password successfully")
                 .build();
+    }
+
+    @Override
+    public UserDto getUserById(Long id) {
+        return ConvertObjectToDto.convertUserToUserDto(userDao.getUserById(id));
+    }
+
+    @Override
+    public UserDto getUserByEmail(String email) {
+        if (StringUtils.hasLength(email)) {
+            User u = userDao.getUserByEmail(email);
+            return ConvertObjectToDto.convertUserToUserDto(u);
+        } else {
+            return null;
+        }
     }
 
 }

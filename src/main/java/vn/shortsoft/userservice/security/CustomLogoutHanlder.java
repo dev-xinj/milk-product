@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.userservice.dao.UserSessionDao;
 import vn.shortsoft.userservice.model.UserSession;
-import vn.shortsoft.userservice.repository.CriRepository;
+import vn.shortsoft.userservice.repository.CustomUserSessionRepository;
 import vn.shortsoft.userservice.utils.JwtUtil;
 
 @Component
@@ -26,7 +26,7 @@ public class CustomLogoutHanlder implements LogoutHandler {
     UserSessionDao userSessionDao;
 
     @Autowired
-    CriRepository criRepository;
+    CustomUserSessionRepository criRepository;
 
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
@@ -41,12 +41,7 @@ public class CustomLogoutHanlder implements LogoutHandler {
         jwtToken = authHeader.substring(7);
 
         sessionId = jwtUtil.extractSessionId(jwtToken);
-        // UserSession userSession = userSessionDao.getBySessionId(sessionId);
         if (sessionId != null) {
-            // userSession.setIsExpired(true);
-            // userSession.setIsRevoked(true);
-            // userSessionDao.save(userSession);
-
             criRepository.getUserSession(true, true, sessionId);
             SecurityContextHolder.clearContext();
         }

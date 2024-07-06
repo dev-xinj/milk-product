@@ -12,7 +12,7 @@ import jakarta.persistence.criteria.Root;
 import vn.shortsoft.userservice.model.UserSession;
 
 @Repository
-public class CriRepository {
+public class CustomUserSessionRepository {
     @PersistenceContext
     private EntityManager em;
 

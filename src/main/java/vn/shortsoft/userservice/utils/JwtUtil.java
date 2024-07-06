@@ -26,6 +26,7 @@ import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.userservice.contants.ExpireContant;
 import vn.shortsoft.userservice.contants.JwtContant;
 import vn.shortsoft.userservice.dto.UserDto;
+import vn.shortsoft.userservice.model.UserSession;
 
 @Log4j2
 @Component
@@ -39,8 +40,6 @@ public class JwtUtil {
                 .issuer("shortsoft.vn")
                 .subject(userDto.getUserName())
                 .claim("sessionId", userDto.getUserSession().getSessionId())
-                .claim("isRevoked", false)
-                .claim("isExpired", false)
                 .expirationTime(Date.from(ExpireContant.EXPIRE_DATE))
                 .audience("123")
                 .build();
@@ -85,8 +84,6 @@ public class JwtUtil {
 
     public boolean isValidToken(String token, UserDetails userDetails) {
         String userName = extractUserName(token);
-        boolean is = userName.equals(userDetails.getUsername());
-        boolean iss = !isValidExpiry(token);
         return userName.equals(userDetails.getUsername()) && !isValidExpiry(token);
     }
 
@@ -103,7 +100,6 @@ public class JwtUtil {
     public boolean isVerifyToken(String token) {
         try {
             JWSVerifier jwsVerifier = new MACVerifier(JwtContant.SECRET_KEY.getBytes());
-            boolean is = JWSObject.parse(token).verify(jwsVerifier);
             return JWSObject.parse(token).verify(jwsVerifier);
         } catch (JOSEException | ParseException e) {
             log.info(e.getMessage());

@@ -23,22 +23,15 @@ public class LoginController {
     private UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDto user, HttpServletRequest request) {
-        HttpSession httpSession = request.getSession();
-        user.getUserSession().builder().sessionId(httpSession.getId()).build();
+    public ResponseEntity<?> register(@RequestBody UserDto user) {
         return ResponseEntity.ok().body(userService.saveUser(user));
     }
 
     @PostMapping("login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto, HttpServletRequest request) {
-        try {
-            HttpSession httpSession = request.getSession();
-            userDto.setUserSession(UserSessionDto.builder().sessionId(httpSession.getId()).build());
-            return ResponseEntity.ok(userService.login(userDto));
-        } catch (RuntimeException e) {
-
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
+        HttpSession httpSession = request.getSession();
+        userDto.setUserSession(UserSessionDto.builder().sessionId(httpSession.getId()).build());
+        return ResponseEntity.ok(userService.login(userDto));
     }
 
     @PostMapping("logout")
