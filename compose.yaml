@@ -1,8 +1,11 @@
+version: '3'
+volumes:
+  db-data:
 services:
   product:
     build:
       context: .
-      dockerfile: Dockerfile
+      target: dev
     depends_on:
       db_postgresql:
         condition: service_healthy
@@ -43,11 +46,9 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - db-data:/root/redis
-      - db-data:/usr/local/etc/redis/redis.conf
+      - ./redis:/root/redis
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       - REDIS_PASSWORD=adminkm
       - REDIS_PORT=6379
       - REDIS_DATABASES=${DB_NAME}
-volumes:
-  db-data:

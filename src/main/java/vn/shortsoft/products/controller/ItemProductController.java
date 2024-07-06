@@ -30,7 +30,7 @@ import vn.shortsoft.products.services.ItemProductService;
 import vn.shortsoft.products.services.impl.CreateRole;
 
 @RestController
-@RequestMapping("v1/products")
+@RequestMapping("v1/products/item")
 public class ItemProductController {
         @Autowired
         ItemProductService itemProductService;
