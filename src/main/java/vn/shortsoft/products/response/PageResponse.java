@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageResponse<T> implements Serializable {
+public class PageResponse implements Serializable {
     private Integer pageNo;
     private Integer pageSize;
     private Integer pageTotal;
-    private T data;
+    private Object data;
 }

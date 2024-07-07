@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import vn.shortsoft.products.dao.ItemProductRedisDao;
-import vn.shortsoft.products.model.ItemProduct;
+import vn.shortsoft.products.dao.ProductRedisDao;
+import vn.shortsoft.products.model.Product;
 
-public class ItemProductRedisDaoImpl implements ItemProductRedisDao{
+public class ProductRedisDaoImpl implements ProductRedisDao{
 
     
 
@@ -18,7 +18,7 @@ public class ItemProductRedisDaoImpl implements ItemProductRedisDao{
     }
 
     @Override
-    public List<ItemProduct> getAllItemProduct() {
+    public List<Product> getAllItemProduct() {
         // TODO Auto-generated method stub
         return null;
     }
