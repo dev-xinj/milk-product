@@ -28,7 +28,7 @@ import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.products.dao.ProductDao;
 import vn.shortsoft.products.exception.ResourceNotFoundException;
 import vn.shortsoft.products.model.Product;
-import vn.shortsoft.products.reponsitory.ProductRepository;
+import vn.shortsoft.products.repository.ProductRepository;
 
 @Component
 @Log4j2

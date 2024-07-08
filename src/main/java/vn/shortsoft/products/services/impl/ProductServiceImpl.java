@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import jakarta.transaction.Transactional;
 import vn.shortsoft.products.dao.ProductDao;
@@ -20,6 +19,7 @@ import vn.shortsoft.products.response.DataResponse;
 import vn.shortsoft.products.response.PageResponse;
 import vn.shortsoft.products.services.ProductRedisService;
 import vn.shortsoft.products.services.ProductService;
+import vn.shortsoft.products.utils.JsonMapperUtil;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -68,8 +68,12 @@ public class ProductServiceImpl implements ProductService {
         Product prod = productDao.getById(productDto.getId());
         if (prod != null) {
             isNotNull(() -> productDto.getBrand(), productDto.getBrand(), prod::setBrand);
-
-            
+            isNotNull(() -> productDto.getMfgDate(), productDto.getMfgDate(), prod::setMfgDate);
+            isNotNull(() -> productDto.getName(), productDto.getName(), prod::setName);
+            isNotNull(() -> productDto.getPrice(), productDto.getPrice(), prod::setPrice);
+            isNotNull(() -> JsonMapperUtil.convertJson(productDto.getProperties()),
+                    JsonMapperUtil.convertJson(productDto.getProperties()), prod::setProperties);
+            productDao.saveProduct(prod);
             return DataResponse.builder()
                     .code(HttpStatus.CREATED.value())
                     .status(HttpStatus.CREATED.name())

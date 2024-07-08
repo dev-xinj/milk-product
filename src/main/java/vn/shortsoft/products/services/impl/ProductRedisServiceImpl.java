@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.shortsoft.products.dto.ProductDto;
-import vn.shortsoft.products.reponsitory.ProductRedisRepository;
+import vn.shortsoft.products.repository.ProductRedisRepository;
 import vn.shortsoft.products.response.PageResponse;
 import vn.shortsoft.products.services.ProductRedisService;
 

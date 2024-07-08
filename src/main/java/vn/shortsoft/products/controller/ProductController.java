@@ -89,9 +89,10 @@ public class ProductController {
 
         @PutMapping("{id}")
         public ResponseEntity<DataResponse> updateProduct(@PathVariable Long id,
-                        @RequestBody ProductDto itemProductDTO) {
+                        @RequestBody ProductDto productDto) {
+                                productDto.setId(id);
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(productService.saveProduct(itemProductDTO));
+                                .body(productService.saveProduct(productDto));
         }
 
         @DeleteMapping("{id}")
