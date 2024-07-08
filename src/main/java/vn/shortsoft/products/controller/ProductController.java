@@ -75,9 +75,10 @@ public class ProductController {
         }
 
         @PostMapping("save")
-        public ResponseEntity<DataResponse> saveProduct(@RequestBody ProductDto productDto) {
+        public ResponseEntity<?> saveProduct(@RequestBody ProductDto productDto) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(productService.saveProduct(productDto));
+
         }
 
         @PatchMapping

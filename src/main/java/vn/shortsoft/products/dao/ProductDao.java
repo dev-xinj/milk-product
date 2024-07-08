@@ -1,6 +1,6 @@
 package vn.shortsoft.products.dao;
 
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 
@@ -11,7 +11,7 @@ public interface ProductDao {
 
     Page<Product> getAllProducts(int pageNo, int pageSize, String sortBy);
 
-    Set<Product> getProductsBySearch(int pageNo, int pageSize, String search, String sortBy);
+    List<Product> getProductsBySearch(int pageNo, int pageSize, String search, String sortBy);
 
     void updateStatusProduct(Long id, String status);
 

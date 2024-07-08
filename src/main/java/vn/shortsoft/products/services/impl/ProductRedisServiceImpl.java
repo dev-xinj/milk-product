@@ -1,6 +1,5 @@
 package vn.shortsoft.products.services.impl;
 
-import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.shortsoft.products.dto.ProductDto;
-import vn.shortsoft.products.dto.ProductDto;
 import vn.shortsoft.products.reponsitory.ProductRedisRepository;
-import vn.shortsoft.products.response.DataResponse;
 import vn.shortsoft.products.response.PageResponse;
 import vn.shortsoft.products.services.ProductRedisService;
 

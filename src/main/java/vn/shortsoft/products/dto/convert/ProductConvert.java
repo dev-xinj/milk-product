@@ -3,7 +3,6 @@ package vn.shortsoft.products.dto.convert;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.shortsoft.products.dto.ProductDto;
 import vn.shortsoft.products.model.Product;
@@ -13,7 +12,7 @@ public class ProductConvert {
 
         public static Product convertToProduct(ProductDto productDto) {
                 return Product.builder()
-                                .id(productDto.getId() > 0 ? productDto.getId() : null)
+                                .id(productDto.getId() != null ? productDto.getId() : null)
                                 .brand(productDto.getBrand())
                                 .name(productDto.getName())
                                 .mfgDate(productDto.getMfgDate())

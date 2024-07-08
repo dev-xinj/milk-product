@@ -2,7 +2,6 @@ package vn.shortsoft.products.model;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
@@ -11,7 +10,7 @@ import org.springframework.stereotype.Component;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.MapKey;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -46,6 +45,12 @@ public class Product extends BaseEntity {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<ProdReview> prodReviews;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private Set<ProdQuestion> prodQuestions;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private Set<ProdSale> prodSales;
 
     public void addProdReviews(ProdReview prodReview) {
         if (prodReview != null) {

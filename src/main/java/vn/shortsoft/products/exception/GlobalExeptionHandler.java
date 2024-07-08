@@ -12,28 +12,25 @@ import org.springframework.web.context.request.WebRequest;
 @RestControllerAdvice
 public class GlobalExeptionHandler {
 
-    @ExceptionHandler({ ResourceNotFoundException.class })
+    @ExceptionHandler({ ResourceNotFoundException.class, NullPointerException.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse validationExceptionNotFound(Exception e, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(new Timestamp(new Date().getTime()));
-        errorResponse.setPath(request.getDescription(false));
-        errorResponse.setMessage(e.getMessage());
-        errorResponse.setError(HttpStatus.NOT_FOUND.getReasonPhrase());
-        errorResponse.setHttpStatus(HttpStatus.NOT_FOUND.value());
-        return errorResponse;
+        return setErrorResponse(e, request, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ NullPointerException.class })
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse validationExceptionNull(Exception e, WebRequest request) {
-        ErrorResponse errorResponse = new ErrorResponse();
-        errorResponse.setTimestamp(new Timestamp(new Date().getTime()));
-        errorResponse.setPath(request.getDescription(false));
-        errorResponse.setMessage(e.getMessage());
-        errorResponse.setError(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        errorResponse.setHttpStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        return errorResponse;
+    @ExceptionHandler({ MethodNotAllowedExeption.class })
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ErrorResponse methodNotAllowedExeption(Exception e, WebRequest request) {
+        return setErrorResponse(e, request, HttpStatus.METHOD_NOT_ALLOWED);
     }
 
+    private ErrorResponse setErrorResponse(Exception e, WebRequest request, HttpStatus http) {
+        ErrorResponse error = new ErrorResponse();
+        error.setError(http.getReasonPhrase());
+        error.setHttpStatus(http.value());
+        error.setMessage(e.getMessage());
+        error.setPath(request.getDescription(false));
+        error.setTimestamp(new Timestamp(new Date().getTime()));
+        return error;
+    }
 }

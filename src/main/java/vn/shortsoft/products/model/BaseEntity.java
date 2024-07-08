@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import vn.shortsoft.products.listener.BaseListener;
 
 @Data
 @NoArgsConstructor
@@ -23,7 +25,8 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Component
 @MappedSuperclass
-public abstract class BaseEntity implements Serializable{
+@EntityListeners(BaseListener.class)
+public abstract class BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -43,7 +46,6 @@ public abstract class BaseEntity implements Serializable{
 
     @Column(name = "updated_date")
     @OrderColumn
-    @UpdateTimestamp
     private Timestamp updatedDate;
 
     @Column(name = "is_deleted")
