@@ -5,12 +5,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -26,6 +29,9 @@ import lombok.experimental.SuperBuilder;
 @Entity
 @DynamicUpdate
 @Table(name = "prod_product")
+// @NamedEntityGraph(name = "Product.prodQuestions", attributeNodes = {
+//         @NamedAttributeNode("prodQuestions")
+// })
 public class Product extends BaseEntity {
 
     @Column(name = "name")

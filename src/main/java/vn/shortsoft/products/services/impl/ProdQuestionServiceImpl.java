@@ -1,11 +1,15 @@
 package vn.shortsoft.products.services.impl;
 
-import java.util.List;
+import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import vn.shortsoft.products.dao.ProdQuestionDao;
+import vn.shortsoft.products.dto.ProdQuestionDto;
+import vn.shortsoft.products.dto.convert.ProdQuestionConvert;
 import vn.shortsoft.products.model.ProdQuestion;
 import vn.shortsoft.products.services.ProdQuestionService;
 
@@ -21,8 +25,10 @@ public class ProdQuestionServiceImpl implements ProdQuestionService {
     }
 
     @Override
-    public List<ProdQuestion> getProdQuestionByProductId(Long productId) {
-        return prodQuestionDao.getProdQuestionByProductId(productId);
+    public Set<ProdQuestionDto> getProdQuestionByProductId(Long productId) {
+        Set<ProdQuestion> prodQuestions = prodQuestionDao.getProdQuestionByProductId(productId);
+        return prodQuestions.stream().map(t -> ProdQuestionConvert.convertToProdQuestionDto(t))
+                .collect(Collectors.toSet());
     }
 
 }

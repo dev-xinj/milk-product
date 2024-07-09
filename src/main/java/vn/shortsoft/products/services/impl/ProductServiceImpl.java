@@ -1,6 +1,7 @@
 package vn.shortsoft.products.services.impl;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -11,9 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
+import vn.shortsoft.products.dao.ProdQuestionDao;
 import vn.shortsoft.products.dao.ProductDao;
 import vn.shortsoft.products.dto.ProductDto;
+import vn.shortsoft.products.dto.convert.ProdQuestionConvert;
 import vn.shortsoft.products.dto.convert.ProductConvert;
+import vn.shortsoft.products.model.ProdQuestion;
 import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.response.DataResponse;
 import vn.shortsoft.products.response.PageResponse;
@@ -21,8 +26,12 @@ import vn.shortsoft.products.services.ProductRedisService;
 import vn.shortsoft.products.services.ProductService;
 import vn.shortsoft.products.utils.JsonMapperUtil;
 
+@Log4j2
 @Service
 public class ProductServiceImpl implements ProductService {
+
+    @Autowired
+    private ProdQuestionDao prodQuestionDao;
 
     @Autowired
     private ProductDao productDao;
@@ -53,11 +62,19 @@ public class ProductServiceImpl implements ProductService {
     @Override
     // @Cacheable(cacheNames = "product", key = "#id")
     public DataResponse getById(Long id) {
+        Product prod = productDao.getById(id);
+        // Set<ProdQuestion> prodQuestion = prodQuestionDao.getProdQuestionByProductId(id);
+        // Set<ProdQuestion> prodQuestion = prodQuestionDao.getQuestionByProductId(id);
+        // prod.setProdQuestions(prodQuestion.stream().collect(Collectors.toSet()));
+        ProductDto productDto = ProductConvert.convertToProductDto(prod);
+        // if (prod != null) {
+        // log.info("Product Id: ", prod.getId());
+        // }
         return DataResponse.builder()
                 .code(HttpStatus.OK.value())
                 .status(HttpStatus.OK.name())
                 .message("Thực hiện thành công")
-                .data(ProductConvert.convertToProductDto(productDao.getById(id)))
+                .data(productDto)
                 .build();
     }
 

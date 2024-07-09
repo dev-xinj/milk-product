@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import vn.shortsoft.products.dto.ProdQuestionDto;
 import vn.shortsoft.products.model.ProdQuestion;
 import vn.shortsoft.products.services.ProdQuestionService;
 
@@ -26,11 +27,11 @@ public class ProdQuestionController {
         return ResponseEntity.ok().body(prodQuestionService.save(prodQuestion));
     }
 
-    @GetMapping("{prodId}")
-    public ResponseEntity<?> getByProductId(@PathVariable Long prodId){
-        List<ProdQuestion> prod = prodQuestionService.getProdQuestionByProductId(prodId);
-        return ResponseEntity.ok().body(prodQuestionService.getProdQuestionByProductId(prodId));
-    }
+    // @GetMapping("{prodId}")
+    // public ResponseEntity<?> getByProductId(@PathVariable Long prodId){
+    //     List<ProdQuestionDto> prod = prodQuestionService.getProdQuestionByProductId(prodId);
+    //     return ResponseEntity.ok().body(prodQuestionService.getProdQuestionByProductId(prodId));
+    // }
     @GetMapping()
     public ResponseEntity<?> getDemo(){
         return ResponseEntity.ok().body(ProdQuestion.builder().build());

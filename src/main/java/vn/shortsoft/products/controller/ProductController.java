@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import vn.shortsoft.products.dto.ProdReviewDto;
 import vn.shortsoft.products.dto.ProductDto;
-import vn.shortsoft.products.model.ProdReview;
 import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.response.DataResponse;
 import vn.shortsoft.products.services.ProductService;
@@ -65,10 +65,10 @@ public class ProductController {
 
         @GetMapping("demo")
         public ResponseEntity<?> demo() {
-                Set<ProdReview> set = new HashSet<>();
-                set.add(ProdReview.builder().build());
+                Set<ProdReviewDto> set = new HashSet<>();
+                set.add(ProdReviewDto.builder().build());
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(ProductDto.builder().prodReviews(set)
+                                .body(ProductDto.builder().prodReviewDtos(set)
                                                 .mfgDate(new Timestamp(new Date().getTime()))
                                                 .properties(new HashMap<>())
                                                 .build());
@@ -90,7 +90,7 @@ public class ProductController {
         @PutMapping("{id}")
         public ResponseEntity<DataResponse> updateProduct(@PathVariable Long id,
                         @RequestBody ProductDto productDto) {
-                                productDto.setId(id);
+                productDto.setId(id);
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(productService.saveProduct(productDto));
         }

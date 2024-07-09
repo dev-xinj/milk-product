@@ -1,6 +1,7 @@
 package vn.shortsoft.products.dto;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -10,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.SuperBuilder;
-import vn.shortsoft.products.model.ProdReview;
 
 @Data
 @AllArgsConstructor
@@ -24,5 +24,7 @@ public class ProductDto {
     String brand;
     Timestamp mfgDate;
     Map<String, Object> properties;
-    Set<ProdReview> prodReviews;
+    Set<ProdReviewDto> prodReviewDtos;
+    List<ProdQuestionDto> prodQuestionDtos;
+    List<ProdSaleDto> prodSaleDtos;
 }

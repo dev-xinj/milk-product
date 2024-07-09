@@ -3,6 +3,8 @@ package vn.shortsoft.products.dto;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+import org.springframework.stereotype.Component;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
