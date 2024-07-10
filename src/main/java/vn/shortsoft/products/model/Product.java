@@ -16,6 +16,7 @@ import jakarta.persistence.NamedAttributeNode;
 import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,8 @@ import lombok.experimental.SuperBuilder;
 @DynamicUpdate
 @Table(name = "prod_product")
 // @NamedEntityGraph(name = "Product.prodQuestions", attributeNodes = {
-//         @NamedAttributeNode("prodQuestions")
+// @NamedAttributeNode("prodQuestions"),
+// @NamedAttributeNode("prodReviews")
 // })
 public class Product extends BaseEntity {
 
@@ -49,6 +51,15 @@ public class Product extends BaseEntity {
     @Column(name = "properties", columnDefinition = "TEXT")
     private String properties;
 
+    @Transient
+    private Integer totalSale;
+
+    @Transient
+    private Integer totalReview;
+
+    @Transient
+    private Double avgReview;
+    
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     private Set<ProdReview> prodReviews;
 

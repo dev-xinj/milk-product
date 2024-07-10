@@ -1,19 +1,18 @@
 package vn.shortsoft.products.dao.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -21,12 +20,16 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Order;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.products.dao.ProductDao;
 import vn.shortsoft.products.exception.ResourceNotFoundException;
+import vn.shortsoft.products.model.ProdQuestion;
+import vn.shortsoft.products.model.ProdReview;
+import vn.shortsoft.products.model.ProdSale;
 import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.repository.ProductRepository;
 
@@ -97,9 +100,10 @@ public class ProductDaoImpl implements ProductDao {
     public List<Product> getProductsBySearch(int pageNo, int pageSize, String search, String sortBy) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-
-        CriteriaQuery<Product> criteriaQuery = criteriaBuilder.createQuery(Product.class);
+        CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
         Root<Product> root = criteriaQuery.from(Product.class);
+
+        // joinReview.get("product").get("id");
         if (StringUtils.hasLength(sortBy)) {
             String nameSort = extractSortBy(sortBy, t -> t.group(1));
             String typeSort = extractSortBy(sortBy, t -> t.group(3));
@@ -112,13 +116,31 @@ public class ProductDaoImpl implements ProductDao {
 
             }
         }
-        criteriaQuery.select(root);
+        // join table
+        Join<Product, ProdReview> joinReview = root.join("prodReviews", JoinType.LEFT);
+        Join<Product, ProdQuestion> joinQuesion = root.join("prodQuestions", JoinType.LEFT);
+        Join<Product, ProdSale> joinSale = root.join("prodSales", JoinType.LEFT);
+
+        criteriaQuery.multiselect(root, criteriaBuilder.avg(joinReview.get("star")).alias("avg_review"), // trung bình
+                                                                                                         // số sao đánh
+                                                                                                         // giá
+                criteriaBuilder.count(joinReview).alias("total_review"), // tổng số lượt đánh giá
+                criteriaBuilder.count(joinSale).alias("total_sale")); // tổng số lượt bán
+        criteriaQuery.groupBy(root.get("id"));
+        // Predicate condition = criteriaBuilder.(root.get("id"));
         if (StringUtils.hasLength(search)) {
             criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
                     String.format("%%%s%%", search.toLowerCase())));
         }
-        List<Product> products = entityManager.createQuery(criteriaQuery).getResultList().stream()
-                .collect(Collectors.toList());
+        List<Object[]> results = entityManager.createQuery(criteriaQuery)
+                .getResultList();
+        List<Product> products = new ArrayList<>();
+        results.forEach(r -> {
+            products.add((Product) r[0]);
+            // log.info(r[1]);
+            // log.info(r[2]);
+            // log.info(r[3]);
+        });
         return products;
     }
 
