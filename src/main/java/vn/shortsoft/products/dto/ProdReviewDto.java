@@ -19,4 +19,5 @@ public class ProdReviewDto implements Serializable{
     String fullName;
     Integer star;
     String description;
+    ProductDto productDto;
 }
