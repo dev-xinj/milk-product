@@ -5,15 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Formula;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.NamedAttributeNode;
-import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -52,15 +50,15 @@ public class Product extends BaseEntity {
     private String properties;
 
     @Transient
-    private Integer totalSale;
+    private Integer totalSale = 0;
 
     @Transient
-    private Integer totalReview;
+    private Integer totalReview = 0;
 
     @Transient
-    private Double avgReview;
-    
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private Double avgReview = 0d;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private Set<ProdReview> prodReviews;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)

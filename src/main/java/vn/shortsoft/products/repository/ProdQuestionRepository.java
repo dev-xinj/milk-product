@@ -12,6 +12,6 @@ import vn.shortsoft.products.model.ProdQuestion;
 @Repository
 public interface ProdQuestionRepository extends JpaRepository<ProdQuestion, Long> {
 
-    @Query(value = "select q from ProdQuestion q where q.product.id = :productId")
+    @Query(value = "select q from ProdQuestion q where q.product.id = :productId order by q.id desc")
     Set<ProdQuestion> findByProductId(@Param("productId") Long productId);
 }

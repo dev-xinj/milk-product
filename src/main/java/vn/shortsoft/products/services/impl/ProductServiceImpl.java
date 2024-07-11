@@ -1,5 +1,6 @@
 package vn.shortsoft.products.services.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -39,37 +40,15 @@ public class ProductServiceImpl implements ProductService {
     private ProductRedisService productRedisService;
 
     @Override
-    // @Cacheable(cacheNames = "products", key = "'listKey'") //Lưu caching
-    public PageResponse getAllProducts(int pageNo, int pageSize, String sortBy) {
-        int p = pageNo;
-        if (pageNo > 0) {
-            pageNo = pageNo - 1;
-        }
-        // Lấy Danh sách sản phẩm theo page
-        Page<Product> products = productDao.getAllProducts(pageNo, pageSize, sortBy);
-        // Convert object to object dto và lưu cache
-        List<ProductDto> productDtos = products.toList().stream()
-                .map(product -> ProductConvert.convertToProductDto(product)).collect(Collectors.toList());
-        return PageResponse.builder()
-                .pageNo(p)
-                .pageSize(pageSize)
-                .pageTotal(products.getTotalPages())
-                .data(productDtos)
-                .build();
-
-    }
-
-    @Override
     // @Cacheable(cacheNames = "product", key = "#id")
     public DataResponse getById(Long id) {
         Product prod = productDao.getById(id);
-        // Set<ProdQuestion> prodQuestion = prodQuestionDao.getProdQuestionByProductId(id);
-        // Set<ProdQuestion> prodQuestion = prodQuestionDao.getQuestionByProductId(id);
-        // prod.setProdQuestions(prodQuestion.stream().collect(Collectors.toSet()));
+        prod.setProdQuestions(new HashSet<>());
+        prod.setProdReviews(new HashSet<>());
+        prod.setProdSales(new HashSet<>());
+        Set<ProdQuestion> prodQuestion = prodQuestionDao.getProdQuestionByProductId(id);
+        prod.setProdQuestions(prodQuestion);
         ProductDto productDto = ProductConvert.convertToProductDto(prod);
-        // if (prod != null) {
-        // log.info("Product Id: ", prod.getId());
-        // }
         return DataResponse.builder()
                 .code(HttpStatus.OK.value())
                 .status(HttpStatus.OK.name())
@@ -126,17 +105,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public DataResponse getProductsBySearch(int pageNo, int pageSize, String search,
+    public DataResponse getAllProductsBySearch(int pageNo, int pageSize, String search,
             String sortBy) {
-        List<Product> products = productDao.getProductsBySearch(pageNo, pageSize, search, sortBy);
+        int p = pageNo;
+        if (pageNo > 0) {
+            pageNo = pageNo - 1;
+        }
+        Page<Product> page = productDao.getAllProductsBySearch(pageNo, pageSize, search, sortBy);
+        List<Product> products = page.toList();
         List<ProductDto> productDtos = products.stream()
                 .map(product -> ProductConvert.convertToProductDto(product)).collect(Collectors.toList());
+        // Lấy Danh sách sản phẩm theo page
         return DataResponse.builder()
                 .code(HttpStatus.OK.value())
                 .status(HttpStatus.OK.name())
                 .message("Thành Công")
-                .data(productDtos)
+                .data(PageResponse.builder()
+                        .pageNo(p)
+                        .pageSize(pageSize)
+                        .pageTotal(page.getTotalPages())
+                        .data(productDtos)
+                        .build())
                 .build();
+
     }
 
     private <T> void isNotNull(Supplier<T> getter, T value, Consumer<T> setter) {

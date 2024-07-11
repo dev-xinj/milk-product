@@ -2,9 +2,11 @@ package vn.shortsoft.products.controller;
 
 import java.sql.Timestamp;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,20 +43,12 @@ public class ProductController {
         private static final String STRING_KEY_PREFIX = "redi2read:strings:";
 
         @GetMapping()
-        // @Cacheable(cacheNames = "getListItemProduct",key = "getList")
-        public ResponseEntity<?> getProducts(@RequestParam int pageNo,
-                        @RequestParam int pageSize, @RequestParam(required = false) String sortBy) {
-                return ResponseEntity.status(HttpStatus.OK)
-                                .body(productService.getAllProducts(pageNo, pageSize, sortBy));
-        }
-
-        @GetMapping("/search")
         // @Cacheable(value = "getSearchListItemProduct")
-        public ResponseEntity<DataResponse> getProductsBySearch(@RequestParam int pageNo,
+        public ResponseEntity<?> getAllProductsBySearch(@RequestParam int pageNo,
                         @RequestParam int pageSize, @RequestParam(required = false) String sortBy,
                         @RequestParam(required = false) String search) {
                 return ResponseEntity.status(HttpStatus.OK)
-                                .body(productService.getProductsBySearch(pageNo, pageSize, search, sortBy));
+                                .body(productService.getAllProductsBySearch(pageNo, pageSize, search, sortBy));
         }
 
         @GetMapping("{id}")
@@ -65,7 +59,7 @@ public class ProductController {
 
         @GetMapping("demo")
         public ResponseEntity<?> demo() {
-                Set<ProdReviewDto> set = new HashSet<>();
+                List<ProdReviewDto> set = new ArrayList();
                 set.add(ProdReviewDto.builder().build());
                 return ResponseEntity.status(HttpStatus.OK)
                                 .body(ProductDto.builder().prodReviewDtos(set)

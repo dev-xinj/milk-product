@@ -1,5 +1,6 @@
 package vn.shortsoft.products.dto.convert;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -39,16 +40,21 @@ public class ProductConvert {
                                 .brand(product.getBrand())
                                 .mfgDate(product.getMfgDate())
                                 .price(product.getPrice())
-                                .prodQuestionDtos(product.getProdQuestions().stream()
-                                                .map(t -> ProdQuestionConvert.convertToProdQuestionDto(t))
-                                                .collect(Collectors.toList()))
+                                .avgReview(product.getAvgReview())
+                                .totalReview(product.getTotalReview())
+                                .totalSale(product.getTotalSale())
+                                .prodQuestionDtos(!product.getProdQuestions()
+                                                .isEmpty() ? product.getProdQuestions().stream()
+                                                                .map(t -> ProdQuestionConvert
+                                                                                .convertToProdQuestionDto(t))
+                                                                .collect(Collectors.toList()) : new ArrayList())
 
-                                .prodSaleDtos(product.getProdSales().stream()
-                                                .map(t -> ProdSaleConvert.convertToProdSaleDto(t))
-                                                .collect(Collectors.toList()))
-                                .prodReviewDtos(product.getProdReviews().stream()
-                                                .map(t -> ProdReviewConvert.convertToProdReviewDto(t))
-                                                .collect(Collectors.toSet()))
+                                // .prodSaleDtos(!product.getProdSales().isEmpty() ? product.getProdSales().stream()
+                                //                 .map(t -> ProdSaleConvert.convertToProdSaleDto(t))
+                                //                 .collect(Collectors.toList()) : new ArrayList())
+                                // .prodReviewDtos(!product.getProdReviews().isEmpty() ? product.getProdReviews().stream()
+                                //                 .map(t -> ProdReviewConvert.convertToProdReviewDto(t))
+                                //                 .collect(Collectors.toList()) : new ArrayList())
                                 .properties(JsonMapperUtil.convertObject(new TypeReference<Map<String, Object>>() {
                                 }, product.getProperties()))
                                 .build();

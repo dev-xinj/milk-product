@@ -18,13 +18,16 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ProductDto {
- Long id;
+    Long id;
     String name;
     Integer price;
     String brand;
+    Double avgReview;
+    Integer totalReview;
+    Integer totalSale;
     Timestamp mfgDate;
     Map<String, Object> properties;
-    Set<ProdReviewDto> prodReviewDtos;
+    List<ProdReviewDto> prodReviewDtos;
     List<ProdQuestionDto> prodQuestionDtos;
     List<ProdSaleDto> prodSaleDtos;
 }
