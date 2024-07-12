@@ -7,7 +7,7 @@ import vn.shortsoft.products.model.ProdQuestion;
 public interface ProdQuestionDao {
     Long save(ProdQuestion prodQuestion);
 
-    Set<ProdQuestion> getProdQuestionByProductId(Long productId);
+    Set<ProdQuestion> getAllQuestionByProductId(Long productId);
 
     Set<ProdQuestion> getQuestionByProductId(Long id);
 }

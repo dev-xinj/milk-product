@@ -1,6 +1,6 @@
 package vn.shortsoft.products.services.impl;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class ProdReviewServiceImpl implements ProdReviewService {
 
     @Override
     public DataResponse getAllReviewByProductId(Long prodId) {
-        List<ProdReview> listReview = prodReviewDao.getAllReviewByProductId(prodId);
+        Set<ProdReview> listReview = prodReviewDao.getAllReviewByProductId(prodId);
         return DataResponse.builder()
                 .code(HttpStatus.OK.value())
                 .status(HttpStatus.OK.name())

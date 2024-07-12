@@ -95,7 +95,6 @@ public class ProductDaoImpl implements ProductDao {
         Join<Product, ProdReview> joinReview = root.join("prodReviews", JoinType.LEFT);
         Join<Product, ProdSale> joinSale = root.join("prodSales", JoinType.LEFT);
         // trung bình số sao đánh giá
-        criteriaQuery.orderBy((criteriaBuilder.desc(criteriaBuilder.count(joinReview))));
         criteriaQuery.multiselect(root, criteriaBuilder.avg(joinReview.get("star")).alias("avg_review"),
                 criteriaBuilder.count(joinReview).alias("total_review"), // tổng số lượt đánh giá
                 criteriaBuilder.count(joinSale).alias("total_sale")); // tổng số lượt bán
@@ -149,7 +148,7 @@ public class ProductDaoImpl implements ProductDao {
         root.join("prodReviews", JoinType.LEFT);
         root.join("prodSales", JoinType.LEFT);
 
-        criteriaQuery.select(criteriaBuilder.count(root));
+        criteriaQuery.select(criteriaBuilder.countDistinct(root));
         criteriaQuery.groupBy(root.get("id"));
         if (StringUtils.hasLength(search)) {
             criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),

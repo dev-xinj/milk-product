@@ -15,11 +15,12 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.products.dao.ProdQuestionDao;
+import vn.shortsoft.products.dao.ProdReviewDao;
 import vn.shortsoft.products.dao.ProductDao;
 import vn.shortsoft.products.dto.ProductDto;
-import vn.shortsoft.products.dto.convert.ProdQuestionConvert;
 import vn.shortsoft.products.dto.convert.ProductConvert;
 import vn.shortsoft.products.model.ProdQuestion;
+import vn.shortsoft.products.model.ProdReview;
 import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.response.DataResponse;
 import vn.shortsoft.products.response.PageResponse;
@@ -35,6 +36,9 @@ public class ProductServiceImpl implements ProductService {
     private ProdQuestionDao prodQuestionDao;
 
     @Autowired
+    private ProdReviewDao prodReviewDao;
+
+    @Autowired
     private ProductDao productDao;
     @Autowired
     private ProductRedisService productRedisService;
@@ -46,8 +50,10 @@ public class ProductServiceImpl implements ProductService {
         prod.setProdQuestions(new HashSet<>());
         prod.setProdReviews(new HashSet<>());
         prod.setProdSales(new HashSet<>());
-        Set<ProdQuestion> prodQuestion = prodQuestionDao.getProdQuestionByProductId(id);
+        Set<ProdQuestion> prodQuestion = prodQuestionDao.getAllQuestionByProductId(id);
+        Set<ProdReview> prodReview = prodReviewDao.getAllReviewByProductId(id);
         prod.setProdQuestions(prodQuestion);
+        prod.setProdReviews(prodReview);
         ProductDto productDto = ProductConvert.convertToProductDto(prod);
         return DataResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -61,8 +67,8 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     // @CachePut(cacheNames = "products", key = "'listKey'") //caching
     public DataResponse saveProduct(ProductDto productDto) {
-        Product prod = productDao.getById(productDto.getId());
-        if (prod != null) {
+        if (productDto.getId() != null) {
+            Product prod = productDao.getById(productDto.getId());
             isNotNull(() -> productDto.getBrand(), productDto.getBrand(), prod::setBrand);
             isNotNull(() -> productDto.getMfgDate(), productDto.getMfgDate(), prod::setMfgDate);
             isNotNull(() -> productDto.getName(), productDto.getName(), prod::setName);
