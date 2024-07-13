@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -69,7 +70,7 @@ public class ProductController {
         }
 
         @PostMapping("save")
-        public ResponseEntity<?> saveProduct(@RequestBody ProductDto productDto) {
+        public ResponseEntity<?> saveProduct(@Valid @RequestBody ProductDto productDto) {
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body(productService.saveProduct(productDto));
 

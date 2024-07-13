@@ -21,9 +21,10 @@ public class ProdReviewController {
     ProdReviewService prodReviewService;
 
     @PostMapping("save")
-    public ResponseEntity<?> save(@RequestBody ProdReviewDto prodReviewDto) {
-        // prodReviewDto.stream().forEach(re -> prodReviewService.save(re));
-        return ResponseEntity.ok().body(prodReviewService.save(prodReviewDto));
+    public ResponseEntity<?> save(@RequestBody List<ProdReviewDto> prodReviewDto) {
+         prodReviewDto.stream().forEach(re -> prodReviewService.save(re));
+         //prodReviewService.save(prodReviewDto)
+        return ResponseEntity.ok().body("");
     }
 
     @GetMapping("{prodId}")
