@@ -34,7 +34,6 @@ import vn.shortsoft.products.dao.ProductDao;
 import vn.shortsoft.products.exception.ResourceNotFoundException;
 import vn.shortsoft.products.model.ProdQuestion;
 import vn.shortsoft.products.model.ProdReview;
-import vn.shortsoft.products.model.ProdSale;
 import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.repository.ProductRepository;
 
@@ -93,11 +92,11 @@ public class ProductDaoImpl implements ProductDao {
         }
         // join table
         Join<Product, ProdReview> joinReview = root.join("prodReviews", JoinType.LEFT);
-        Join<Product, ProdSale> joinSale = root.join("prodSales", JoinType.LEFT);
+        // Join<Product, ProdSale> joinSale = root.join("prodSales", JoinType.LEFT);
         // trung bình số sao đánh giá
         criteriaQuery.multiselect(root, criteriaBuilder.avg(joinReview.get("star")).alias("avg_review"),
-                criteriaBuilder.count(joinReview).alias("total_review"), // tổng số lượt đánh giá
-                criteriaBuilder.count(joinSale).alias("total_sale")); // tổng số lượt bán
+                criteriaBuilder.count(joinReview).alias("total_review")); // tổng số lượt đánh giá
+                // criteriaBuilder.count(joinSale).alias("total_sale")); // tổng số lượt bán
         criteriaQuery.groupBy(root.get("id"));
         if (StringUtils.hasLength(search)) {
             criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(root.get("name")),
@@ -113,16 +112,16 @@ public class ProductDaoImpl implements ProductDao {
             Product prod = (Product) r[0];
             prod.setProdQuestions(new HashSet<>());
             prod.setProdReviews(new HashSet<>());
-            prod.setProdSales(new HashSet<>());
+            // prod.setProdSales(new HashSet<>());
             if (r[1] instanceof Double && r[1] != null) {
                 prod.setAvgReview((Double) r[1]);
             }
             if (r[2] instanceof Long && (r[2] != null)) {
                 prod.setTotalReview(Math.toIntExact((long) r[2]));
             }
-            if (r[3] instanceof Long && (r[3] != null)) {
-                prod.setTotalSale(Math.toIntExact((long) r[3]));
-            }
+            // if (r[3] instanceof Long && (r[3] != null)) {
+            //     prod.setTotalSale(Math.toIntExact((long) r[3]));
+            // }
             products.add(prod);
         });
         Page<Product> page = new PageImpl<Product>(products, PageRequest.of(pageNo, pageSize), totalElement(search));
@@ -146,7 +145,7 @@ public class ProductDaoImpl implements ProductDao {
         Root<Product> root = criteriaQuery.from(Product.class);
         // join table
         root.join("prodReviews", JoinType.LEFT);
-        root.join("prodSales", JoinType.LEFT);
+        // root.join("prodSales", JoinType.LEFT);
 
         criteriaQuery.select(criteriaBuilder.countDistinct(root));
         criteriaQuery.groupBy(root.get("id"));

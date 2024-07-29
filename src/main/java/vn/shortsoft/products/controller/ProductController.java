@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,8 +72,18 @@ public class ProductController {
 
         @PostMapping("save")
         public ResponseEntity<?> saveProduct(@Valid @RequestBody ProductDto productDto) {
+                for (int i = 0; i < 1000; i++) {
+                        productDto.setName(i + "clone test");
+                        productService.saveProduct(productDto);
+                        productDto.setId(null);
+                        try {
+                                TimeUnit.SECONDS.sleep(1);
+                        } catch (InterruptedException ie) {
+                                Thread.currentThread().interrupt();
+                        }
+                }
                 return ResponseEntity.status(HttpStatus.CREATED)
-                                .body(productService.saveProduct(productDto));
+                                .body("done");
 
         }
 

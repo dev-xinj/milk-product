@@ -55,9 +55,9 @@ public class ProductConvert {
                                                                 .map(t -> ProdQuestionConvert
                                                                                 .convertToProdQuestionDto(t))
                                                                 .collect(Collectors.toList()) : new ArrayList())
-                                .prodSaleDtos(!product.getProdSales().isEmpty() ? product.getProdSales().stream()
-                                                .map(t -> ProdSaleConvert.convertToProdSaleDto(t))
-                                                .collect(Collectors.toList()) : new ArrayList())
+                                // .prodSaleDtos(!product.getProdSales().isEmpty() ? product.getProdSales().stream()
+                                                // .map(t -> ProdSaleConvert.convertToProdSaleDto(t))
+                                                // .collect(Collectors.toList()) : new ArrayList())
                                 .prodReviewDtos(!product.getProdReviews().isEmpty() ? product.getProdReviews().stream()
                                                 .map(t -> ProdReviewConvert.convertToProdReviewDto(t))
                                                 .collect(Collectors.toList()) : new ArrayList())

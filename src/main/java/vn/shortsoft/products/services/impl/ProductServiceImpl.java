@@ -1,14 +1,22 @@
 package vn.shortsoft.products.services.impl;
 
-import jakarta.transaction.Transactional;
-import lombok.extern.log4j.Log4j2;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import lombok.extern.log4j.Log4j2;
 import vn.shortsoft.products.dao.ProdQuestionDao;
 import vn.shortsoft.products.dao.ProdReviewDao;
-import vn.shortsoft.products.dao.ProdSaleDao;
 import vn.shortsoft.products.dao.ProductDao;
 import vn.shortsoft.products.dto.ProductDto;
 import vn.shortsoft.products.dto.convert.ProductConvert;
@@ -21,13 +29,6 @@ import vn.shortsoft.products.services.ProductRedisService;
 import vn.shortsoft.products.services.ProductService;
 import vn.shortsoft.products.utils.JsonMapperUtil;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
 @Log4j2
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -35,8 +36,8 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProdQuestionDao prodQuestionDao;
 
-    @Autowired
-    private ProdSaleDao prodSaleDao;
+    // @Autowired
+    // private ProdSaleDao prodSaleDao;
 
     @Autowired
     private ProdReviewDao prodReviewDao;
@@ -47,12 +48,12 @@ public class ProductServiceImpl implements ProductService {
     private ProductRedisService productRedisService;
 
     @Override
-    // @Cacheable(cacheNames = "product", key = "#id")
+    @Cacheable(cacheNames = "product", key = "#id")
     public DataResponse getById(Long id) {
         Product prod = productDao.getById(id);
         prod.setProdQuestions(new HashSet<>());
         prod.setProdReviews(new HashSet<>());
-        prod.setProdSales(new HashSet<>());
+        // prod.setProdSales(new HashSet<>());
         Set<ProdQuestion> prodQuestion = prodQuestionDao.getAllQuestionByProductId(id);
         Set<ProdReview> prodReview = prodReviewDao.getAllReviewByProductId(id);
         prod.setProdQuestions(prodQuestion);
@@ -60,14 +61,12 @@ public class ProductServiceImpl implements ProductService {
         prod.setTotalReview(prodReview.size());
         int value = prodReview.stream().map(ProdReview::getStar).collect(Collectors.toSet()).stream().reduce(0, (a, b) -> a + b);
         prod.setAvgReview((double) value / prodReview.size());
-        prod.setTotalSale(prodSaleDao.totalSaleByProductId(id));
+        // prod.setTotalSale(prodSaleDao.totalSaleByProductId(id));
         ProductDto productDto = ProductConvert.convertToProductDto(prod);
         return DataResponse.builder().code(HttpStatus.OK.value()).status(HttpStatus.OK.name()).message("Thực hiện thành công").data(productDto).build();
     }
 
     @Override
-    @Transactional
-    // @CachePut(cacheNames = "products", key = "'listKey'") //caching
     public DataResponse saveProduct(ProductDto productDto) {
         if (productDto.getId() != null) {
             Product prod = productDao.getById(productDto.getId());
@@ -90,20 +89,21 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    // @CacheEvict(cacheNames = "product", key = "#id") //Xóa caching
+    @CacheEvict(cacheNames = "product", key = "#id") //Xóa caching
     public DataResponse deleteById(Long id) {
         productDao.deleteById(id);
         return new DataResponse(HttpStatus.CONTINUE.value(), HttpStatus.CONTINUE.name(), "Xóa Thành Công");
     }
 
     @Override
-    // @CacheEvict(cacheNames = "product", key = "#id")
+    @CacheEvict(cacheNames = "product", key = "#id")
     public DataResponse updateStatusProduct(Long id, String status) {
         productDao.updateStatusProduct(id, status);
         return new DataResponse(HttpStatus.CONTINUE.value(), HttpStatus.CONTINUE.name(), "Update Thành Công");
     }
 
     @Override
+    @Cacheable(cacheNames = "getAllProductsBySearch", key = "#pageNo")
     public DataResponse getAllProductsBySearch(int pageNo, int pageSize, String search, String sortBy) {
         int p = pageNo;
         if (pageNo > 0) {

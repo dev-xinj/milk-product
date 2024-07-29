@@ -1,10 +1,10 @@
-package vn.shortsoft.products.dao;
+// package vn.shortsoft.products.dao;
 
-import vn.shortsoft.products.model.ProdSale;
+// import vn.shortsoft.products.model.ProdSale;
 
-public interface ProdSaleDao {
+// public interface ProdSaleDao {
 
-    Long saveSale(ProdSale prodSale);
+//     Long saveSale(ProdSale prodSale);
 
-    int totalSaleByProductId(Long productId);
-}
+//     int totalSaleByProductId(Long productId);
+// }

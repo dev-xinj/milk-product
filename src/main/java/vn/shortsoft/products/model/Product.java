@@ -64,8 +64,8 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
     private Set<ProdQuestion> prodQuestions;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
-    private Set<ProdSale> prodSales;
+    // @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    // private Set<ProdSale> prodSales;
 
     public void addProdReviews(ProdReview prodReview) {
         if (prodReview != null) {
