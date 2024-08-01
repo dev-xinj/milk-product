@@ -20,13 +20,14 @@ public class ProdQuestionServiceImpl implements ProdQuestionService {
     ProdQuestionDao prodQuestionDao;
 
     @Override
-    public Long save(ProdQuestion prodQuestion) {
+    public Long save(ProdQuestionDto prodQuestionDto) {
+        ProdQuestion prodQuestion = ProdQuestionConvert.convertToProdQuestion(prodQuestionDto);
         return prodQuestionDao.save(prodQuestion);
     }
 
     @Override
-    public Set<ProdQuestionDto> getProdQuestionByProductId(Long productId) {
-        Set<ProdQuestion> prodQuestions = prodQuestionDao.getProdQuestionByProductId(productId);
+    public Set<ProdQuestionDto> getAllQuestionByProductId(Long productId) {
+        Set<ProdQuestion> prodQuestions = prodQuestionDao.getAllQuestionByProductId(productId);
         return prodQuestions.stream().map(t -> ProdQuestionConvert.convertToProdQuestionDto(t))
                 .collect(Collectors.toSet());
     }

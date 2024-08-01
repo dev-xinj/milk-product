@@ -12,6 +12,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import vn.shortsoft.products.dto.ProductDto;
+import vn.shortsoft.products.dto.convert.ProductConvert;
+import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.repository.ProductRedisRepository;
 import vn.shortsoft.products.response.PageResponse;
 import vn.shortsoft.products.services.ProductRedisService;
@@ -64,6 +66,7 @@ public class ProductRedisServiceImpl implements ProductRedisService {
         try {
             redisTemplate.opsForValue().set("product::" + productDto.getId(),
                     ob.writeValueAsString(productDto));
+            redisRepository.save(ProductConvert.convertToProduct(productDto));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

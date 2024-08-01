@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.redis.core.RedisHash;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Column;
@@ -25,6 +26,7 @@ import vn.shortsoft.products.listener.BaseListener;
 @SuperBuilder
 @Component
 @MappedSuperclass
+@RedisHash
 @EntityListeners(BaseListener.class)
 public abstract class BaseEntity implements Serializable {
     @Id

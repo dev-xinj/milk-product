@@ -1,5 +1,7 @@
 package vn.shortsoft.products.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +21,10 @@ public class ProdReviewController {
     ProdReviewService prodReviewService;
 
     @PostMapping("save")
-    public ResponseEntity<?> save(@RequestBody ProdReviewDto prodReviewDto) {
-        return ResponseEntity.ok().body(prodReviewService.save(prodReviewDto));
+    public ResponseEntity<?> save(@RequestBody List<ProdReviewDto> prodReviewDto) {
+         prodReviewDto.stream().forEach(re -> prodReviewService.save(re));
+         //prodReviewService.save(prodReviewDto)
+        return ResponseEntity.ok().body("");
     }
 
     @GetMapping("{prodId}")

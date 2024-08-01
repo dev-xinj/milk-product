@@ -2,6 +2,7 @@ package vn.shortsoft.products.dto.convert;
 
 import vn.shortsoft.products.dto.ProdQuestionDto;
 import vn.shortsoft.products.model.ProdQuestion;
+import vn.shortsoft.products.model.Product;
 
 public class ProdQuestionConvert {
     public static ProdQuestion convertToProdQuestion(ProdQuestionDto prodQuestionDto) {
@@ -12,6 +13,7 @@ public class ProdQuestionConvert {
                 .textSend(prodQuestionDto.getTextSend())
                 .type(prodQuestionDto.getType())
                 .userId(prodQuestionDto.getUserId())
+                .product(Product.builder().id(prodQuestionDto.getProductDto().getId()).build())
                 .build();
     }
 

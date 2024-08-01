@@ -23,8 +23,10 @@ public class ProdQuestionController {
     ProdQuestionService prodQuestionService;
 
     @PostMapping("save")
-    public ResponseEntity<?> saveQuestion(@RequestBody ProdQuestion prodQuestion){
-        return ResponseEntity.ok().body(prodQuestionService.save(prodQuestion));
+    public ResponseEntity<?> saveQuestion(@RequestBody List<ProdQuestionDto> prodQuestion){
+        prodQuestion.forEach(q -> prodQuestionService.save(q));
+        //prodQuestionService.save(prodQuestion)
+        return ResponseEntity.ok().body("done");
     }
 
     // @GetMapping("{prodId}")

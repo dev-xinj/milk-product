@@ -1,5 +1,6 @@
 package vn.shortsoft.products.dao.impl;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,10 +30,10 @@ public class ProdQuestionDaoImpl implements ProdQuestionDao {
     }
 
     @Override
-    public Set<ProdQuestion> getProdQuestionByProductId(Long productId) {
-        Set<ProdQuestion> optList = prodQuestionRepository.findByProductId(productId);
-        if (!optList.isEmpty()) {
-            return optList;
+    public Set<ProdQuestion> getAllQuestionByProductId(Long productId) {
+        Optional<Set<ProdQuestion>> optList = prodQuestionRepository.findByProductId(productId);
+        if (optList.isPresent()) {
+            return optList.get();
         }
         return null;
     }
@@ -48,7 +49,6 @@ public class ProdQuestionDaoImpl implements ProdQuestionDao {
                 .collect(Collectors.toSet());
 
         return prodQuestions;
-
 
     }
 

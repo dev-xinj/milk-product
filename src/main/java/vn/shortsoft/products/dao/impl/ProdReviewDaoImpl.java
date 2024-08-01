@@ -1,7 +1,7 @@
 package vn.shortsoft.products.dao.impl;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,8 +22,8 @@ public class ProdReviewDaoImpl implements ProdReviewDao {
     }
 
     @Override
-    public List<ProdReview> getAllReviewByProductId(Long prodId) {
-        Optional<List<ProdReview>> optList = prodReviewRepository.findByProductId(prodId);
+    public Set<ProdReview> getAllReviewByProductId(Long prodId) {
+        Optional<Set<ProdReview>> optList = prodReviewRepository.findByProductId(prodId);
         return optList.isPresent() ? optList.get() : null;
     }
 
