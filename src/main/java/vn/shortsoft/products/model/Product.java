@@ -5,13 +5,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.Formula;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.Indexed;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -26,15 +26,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @Component
 @Entity
+@RedisHash
 @DynamicUpdate
 @Table(name = "prod_product")
-// @NamedEntityGraph(name = "Product.prodQuestions", attributeNodes = {
-// @NamedAttributeNode("prodQuestions"),
-// @NamedAttributeNode("prodReviews")
-// })
 public class Product extends BaseEntity {
 
     @Column(name = "name")
+    @Indexed
     private String name;
 
     @Column(name = "price")

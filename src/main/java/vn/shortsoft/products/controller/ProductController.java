@@ -5,13 +5,10 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -28,10 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import jakarta.validation.Valid;
 import vn.shortsoft.products.dto.ProdReviewDto;
 import vn.shortsoft.products.dto.ProductDto;
-import vn.shortsoft.products.model.Product;
 import vn.shortsoft.products.response.DataResponse;
+import vn.shortsoft.products.services.ProductRedisService;
 import vn.shortsoft.products.services.ProductService;
 
 @RestController
@@ -41,7 +39,11 @@ public class ProductController {
         ProductService productService;
 
         @Autowired
-        RedisTemplate<Object, Object> redisTemplate;
+        private RedisTemplate<String, String> template;
+
+        @Autowired
+        ProductRedisService productRedisService;
+
         private static final String STRING_KEY_PREFIX = "redi2read:strings:";
 
         @GetMapping()
@@ -72,16 +74,18 @@ public class ProductController {
 
         @PostMapping("save")
         public ResponseEntity<?> saveProduct(@Valid @RequestBody ProductDto productDto) {
-                for (int i = 0; i < 1000; i++) {
-                        productDto.setName(i + "clone test");
-                        productService.saveProduct(productDto);
-                        productDto.setId(null);
-                        try {
-                                TimeUnit.SECONDS.sleep(1);
-                        } catch (InterruptedException ie) {
-                                Thread.currentThread().interrupt();
-                        }
-                }
+                // productRedisService.save(productDto);
+                // for (int i = 0; i < 1000; i++) {
+                //         productDto.setName(i + "clone test");
+                        
+                //         productDto.setId(null);
+                //         try {
+                //                 TimeUnit.SECONDS.sleep(1);
+                //         } catch (InterruptedException ie) {
+                //                 Thread.currentThread().interrupt();
+                //         }
+                // }
+                productRedisService.save(productDto);
                 return ResponseEntity.status(HttpStatus.CREATED)
                                 .body("done");
 
@@ -110,21 +114,23 @@ public class ProductController {
 
         @PostMapping("/redis")
         public Map.Entry<String, String> setString(@RequestBody Map.Entry<String, String> kvp) {
+                template.opsForValue().set(STRING_KEY_PREFIX + kvp.getKey(), kvp.getValue());
                 // redisTemplate.opsForValue().set(STRING_KEY_PREFIX.toString() +
                 // kvp.getKey().toString(),
                 // kvp.getValue().toString());
                 // System.out.println(STRING_KEY_PREFIX + kvp);
                 // System.out.println(STRING_KEY_PREFIX);
-                Set<Product> set = new HashSet<>();
-                set.add(Product.builder().name("admin").build());
-                set.add(Product.builder().name("customer").build());
-                redisTemplate.opsForHash().put(STRING_KEY_PREFIX, kvp.getKey(), kvp.getValue());
+                // Set<Product> set = new HashSet<>();
+                // set.add(Product.builder().name("admin").build());
+                // set.add(Product.builder().name("customer").build());
+                // redisTemplate.opsForHash().put(STRING_KEY_PREFIX, kvp.getKey(),
+                // kvp.getValue());
                 return kvp;
         }
 
         @GetMapping("/redis/{key}")
         public Map.Entry<String, String> getString(@PathVariable("key") String key) {
-                String value = redisTemplate.opsForValue().get(STRING_KEY_PREFIX + key).toString();
+                String value = template.opsForValue().get(STRING_KEY_PREFIX + key).toString();
 
                 if (value == null) {
                         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "key not found");
