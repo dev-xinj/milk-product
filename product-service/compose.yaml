@@ -1,0 +1,54 @@
+version: '3'
+volumes:
+  db-data:
+services:
+  product:
+    build:
+      context: .
+      target: dev
+    depends_on:
+      db_postgresql:
+        condition: service_healthy
+        restart: true
+      redis:
+        condition: service_started
+        restart: true
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO}
+    ports:
+      - ${PORT_SPRING_EXTERNAL}:${PORT_SPRING_INTERNAL}
+
+    restart: unless-stopped
+
+  db_postgresql:
+    image: postgres
+    restart: always
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    ports:
+      - ${PORT_POSTGRESQL_EXTERNAL}:${PORT_POSTGRESQL_INTERNAL}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready", "-U", "postgresql" ]
+      interval: 10s
+      timeout: 5s
+      retries: 2
+  redis:
+    image: redis:latest
+    restart: always
+    hostname: redis-server
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis:/root/redis
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+    environment:
+      - REDIS_PASSWORD=adminkm
+      - REDIS_PORT=6379
+      - REDIS_DATABASES=${DB_NAME}
